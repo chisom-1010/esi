@@ -19,9 +19,9 @@ import { useState } from "react";
 
 // Définissez vos chemins de redirection ici pour une gestion centralisée
 const REDIRECT_PATHS = {
-  admin: "/admin/dashboard",
+  admin: "/admin-dashboard",
   data_entry_personnel: "/data-entry/enter-evaluation",
-  etudiant: "/student-form", // Gardé pour l'exemple
+  etudiant: "/data-entry/enter-evaluation", // Gardé pour l'exemple
   enseignant: "/teacher-dashboard", // Gardé pour l'exemple
   default: "/dashboard", // Chemin par défaut si aucun rôle ne correspond ou si profil absent
 };

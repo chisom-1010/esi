@@ -20,7 +20,7 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
   // Fonction pour gérer le changement de rôle (appel API)
   const handleRoleChange = async (
     userId: string,
-    newRole: "admin" | "data_entry_personnel",
+    newRole: "admin" | "data_entry_personnel" | "etudiant",
   ) => {
     // Confirmation
     if (

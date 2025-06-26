@@ -23,25 +23,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-// Définir les types basés sur ce que la page serveur envoie
+// Définir les types basés sur ce que le serveur envoie
 type EnseignementType = {
   id: string;
-  anneeacademique: { nom_annee: string };
-  matiere: { nom_matiere: string };
-  enseignant: { nom_complet: string };
-  classe: { nom_classe: string; niveau: string };
+  anneeacademique: { nom_annee: string } | null;
+  matiere: { nom_matiere: string } | null;
+  enseignant: { nom_complet: string } | null;
+  classe: { nom_classe: string; niveau: string } | null;
 };
 type OptionType = { id: string; libelle: string; points: number };
-type CritereType = {
-  id: string;
-  texte_critere: string;
-  type_critere: string;
-  is_active: boolean;
-};
+type CritereType = { id: string; texte_critere: string };
+// <<< CORRIGÉ : Le type CategorieType doit aussi gérer la possibilité d'un critereevaluation null
 type CategorieType = {
   id: string;
   nom_categorie: string;
-  critereevaluation: CritereType[];
+  critereevaluation: CritereType[] | null;
 };
 
 interface EvaluationFormProps {
@@ -56,12 +52,13 @@ export function EvaluationForm({
   options,
 }: EvaluationFormProps) {
   const [selectedEnseignement, setSelectedEnseignement] = useState<string>("");
-  const [responses, setResponses] = useState<Record<string, string>>({}); // { [critereId]: optionId }
+  const [responses, setResponses] = useState<Record<string, string>>({});
   const [commentaire, setCommentaire] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const allCriteria = categories.flatMap((cat) => cat.critereevaluation);
+  // Filtre les critères "null" pour un décompte correct
+  const allCriteria = categories.flatMap((cat) => cat.critereevaluation || []);
 
   const handleResponseChange = (critereId: string, optionId: string) => {
     setResponses((prev) => ({ ...prev, [critereId]: optionId }));
@@ -71,22 +68,22 @@ export function EvaluationForm({
     event.preventDefault();
     setIsLoading(true);
 
-    // Validation
+    console.log("La fonction handleSubmit a été déclenchée !");
+    alert("Le bouton de soumission a bien été cliqué.");
+
     if (!selectedEnseignement) {
       toast.error("Veuillez sélectionner un enseignement à évaluer.");
       setIsLoading(false);
       return;
     }
-    const answeredCriteriaCount = Object.keys(responses).length;
-    if (answeredCriteriaCount < allCriteria.length) {
+    if (Object.keys(responses).length < allCriteria.length) {
       toast.error(
-        `Veuillez répondre à tous les ${allCriteria.length} critères. ${answeredCriteriaCount} répondu(s).`,
+        `Veuillez répondre à tous les ${allCriteria.length} critères.`,
       );
       setIsLoading(false);
       return;
     }
 
-    // Préparer les données pour l'API (format JSONB attendu)
     const responsesPayload = Object.entries(responses).map(
       ([critereId, optionId]) => ({
         critere_id: critereId,
@@ -104,21 +101,15 @@ export function EvaluationForm({
           commentaire: commentaire,
         }),
       });
-
       const result = await response.json();
-
       if (!response.ok) {
-        throw new Error(
-          result.error || "Échec de la soumission du formulaire.",
-        );
+        throw new Error(result.error || "Échec de la soumission.");
       }
-
       toast.success("Évaluation soumise avec succès !");
-      // Réinitialiser le formulaire ou rediriger
       setSelectedEnseignement("");
       setResponses({});
       setCommentaire("");
-      // router.push('/dashboard'); // Ou une autre page
+      router.refresh(); // Rafraîchit la page pour vider le formulaire
     } catch (err: any) {
       toast.error(`Erreur : ${err.message}`);
     } finally {
@@ -126,15 +117,16 @@ export function EvaluationForm({
     }
   };
 
+  const validEnseignements = enseignements.filter(
+    (ens) => ens.enseignant && ens.matiere && ens.classe && ens.anneeacademique,
+  );
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* --- Section Sélection Enseignement --- */}
       <Card>
         <CardHeader>
           <CardTitle>Sélection de l'Enseignement</CardTitle>
-          <CardDescription>
-            Choisissez l'enseignant, la matière et la classe que vous évaluez.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <Label htmlFor="enseignement-select">Enseignement</Label>
@@ -147,9 +139,10 @@ export function EvaluationForm({
               <SelectValue placeholder="Sélectionnez un enseignement..." />
             </SelectTrigger>
             <SelectContent>
-              {enseignements.map((ens) => (
+              {/* Utiliser la liste filtrée validEnseignements */}
+              {validEnseignements.map((ens) => (
                 <SelectItem key={ens.id} value={ens.id}>
-                  {`${ens.enseignant.nom_complet} - ${ens.matiere.nom_matiere} - ${ens.classe.nom_classe} (${ens.anneeacademique.nom_annee})`}
+                  {`${ens.enseignant?.nom_complet || "N/A"} - ${ens.matiere?.nom_matiere || "N/A"} - ${ens.classe?.nom_classe || "N/A"} (${ens.anneeacademique?.nom_annee || "N/A"})`}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -164,7 +157,8 @@ export function EvaluationForm({
             <CardTitle>{cat.nom_categorie}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {cat.critereevaluation.map((critere) => (
+            {/* <<< CORRECTION ICI : Utiliser (cat.critereevaluation || []) pour éviter l'erreur .map sur null */}
+            {(cat.critereevaluation || []).map((critere) => (
               <div
                 key={critere.id}
                 className="p-4 border rounded-md shadow-sm bg-background"
@@ -197,6 +191,12 @@ export function EvaluationForm({
                 </RadioGroup>
               </div>
             ))}
+            {/* Gérer le cas où il n'y a aucun critère pour une catégorie */}
+            {(!cat.critereevaluation || cat.critereevaluation.length === 0) && (
+              <p className="text-sm text-muted-foreground">
+                Aucun critère d'évaluation pour cette catégorie.
+              </p>
+            )}
           </CardContent>
         </Card>
       ))}
@@ -205,13 +205,10 @@ export function EvaluationForm({
       <Card>
         <CardHeader>
           <CardTitle>Commentaires Additionnels</CardTitle>
-          <CardDescription>
-            Vos remarques et suggestions sont importantes.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <Textarea
-            placeholder="Écrivez vos commentaires ici..."
+            placeholder="Écrivez vos remarques et suggestions ici..."
             value={commentaire}
             onChange={(e) => setCommentaire(e.target.value)}
             rows={4}

@@ -1,12 +1,14 @@
 // lib/supabase/server.ts
+
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { cookies } from "next/headers"; // Nécessite Next.js App Router
+import { cookies } from "next/headers"; // On n'importe plus ReadonlyRequestCookies explicitement
 import { createClient as createSupabaseAdminClient } from "@supabase/supabase-js";
 
-// Client pour les Server Components, Server Actions, et Route Handlers
+// ✅ Pour Server Components, Server Actions, Route Handlers
+//    Version modifiée pour traiter cookies() comme si elle était asynchrone
+//    ET SANS utiliser le type ReadonlyRequestCookies explicitement
 export async function createSupabaseServerClient() {
-  // Récupère l'objet cookies. Si l'erreur 'Promise' persiste,
-  // C'est ICI que le problème se situe (contexte d'appel incorrect).
+  // Si TypeScript pense que cookies() retourne une Promesse, nous devons l'await ici.
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -14,45 +16,31 @@ export async function createSupabaseServerClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          // Vérifie si cookieStore est une Promise, ce qui n'est pas supporté ici.
-          if (cookieStore instanceof Promise) {
-            throw new Error(
-              "cookieStore is a Promise. Did you forget to use 'await' when calling cookies()?",
-            );
-          }
-          // S'il est ReadonlyRequestCookies, ceci devrait fonctionner.
-          return (
-            cookieStore as {
-              get: (name: string) => { value: string } | undefined;
-            }
-          ).get(name)?.value;
+        get: async (name: string) => {
+          // Après 'await cookies()', cookieStoreFromHeaders devrait être la valeur résolue.
+          // Si elle a une méthode .get(), cela devrait fonctionner.
+          // Pour plus de sûreté, on ré-appelle 'await cookies()' ici aussi,
+          // car le typage semble très instable dans votre environnement.
+          const store = await cookies();
+          return store.get(name)?.value;
         },
-        set(name: string, value: string, options: CookieOptions) {
+        set: async (name: string, value: string, options: CookieOptions) => {
           try {
-            // Tente de définir le cookie.
-            // On utilise 'as any' pour contourner le typage 'Readonly'
-            // car dans les contextes d'écriture (Server Actions, Route Handlers),
-            // l'objet cookies() *permet* .set().
-            (cookieStore as any).set({ name, value, ...options });
+            const store = await cookies();
+            // Si 'store' a une méthode .set() à l'exécution (dans Server Actions/Route Handlers),
+            // cela fonctionnera. Si TS se plaint encore, un cast `(store as any).set` pourrait être nécessaire.
+            store.set(name, value, options);
           } catch (error) {
-            // L'erreur se produit typiquement si on essaie d'écrire depuis un Server Component.
-            // Peut être ignoré si le middleware gère le rafraîchissement de session.
-            console.warn(
-              `Failed to set cookie '${name}' (likely in a Server Component context):`,
-              error,
-            );
+            console.warn(`Échec de la définition du cookie '${name}' :`, error);
           }
         },
-        remove(name: string, options: CookieOptions) {
+        remove: async (name: string, options: CookieOptions) => {
           try {
-            // Tente de supprimer le cookie (en le définissant comme vide).
-            // On utilise 'as any' pour la même raison que .set().
-            (cookieStore as any).set({ name, value: "", ...options });
+            const store = await cookies();
+            store.set(name, "", { ...options, maxAge: 0 });
           } catch (error) {
-            // L'erreur se produit typiquement si on essaie d'écrire depuis un Server Component.
             console.warn(
-              `Failed to remove cookie '${name}' (likely in a Server Component context):`,
+              `Échec de la suppression du cookie '${name}' :`,
               error,
             );
           }
@@ -62,16 +50,28 @@ export async function createSupabaseServerClient() {
   );
 }
 
-// Client Supabase avec la clé de SERVICE (inchangé)
+// ✅ Server Components (read-only) - Inchangé, ne dépend pas de ReadonlyRequestCookies
+export default function createSupabaseReadOnlyClient() {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: () => undefined,
+        set: () => {},
+        remove: () => {},
+      },
+    },
+  );
+}
+
+// ✅ Service Role Client (admin) - Inchangé
 export function createSupabaseServiceRoleClient() {
   return createSupabaseAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!, // Clé de service !
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
+      auth: { autoRefreshToken: false, persistSession: false },
     },
   );
 }
