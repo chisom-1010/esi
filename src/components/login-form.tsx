@@ -1,7 +1,8 @@
+// components/auth/LoginForm.tsx (ou selon votre structure)
 "use client";
 
 import { cn } from "@/lib/utils";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client"; // <<== Assurez-vous que ce chemin est correct
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,6 +17,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+// Définissez vos chemins de redirection ici pour une gestion centralisée
+const REDIRECT_PATHS = {
+  admin: "/admin/dashboard",
+  data_entry_personnel: "/data-entry/enter-evaluation",
+  etudiant: "/student-form", // Gardé pour l'exemple
+  enseignant: "/teacher-dashboard", // Gardé pour l'exemple
+  default: "/dashboard", // Chemin par défaut si aucun rôle ne correspond ou si profil absent
+};
+
 export function LoginForm({
   className,
   ...props
@@ -28,50 +38,96 @@ export function LoginForm({
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createSupabaseBrowserClient();
+    const supabase = createSupabaseBrowserClient(); // Utilise votre helper client
     setIsLoading(true);
     setError(null);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      if (error) {
-        setError("Identifiants invalides");
-      } else {
-        // Récupérer le rôle de l'utilisateur
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", data.user.id)
-          .single();
+      // 1. Tenter la connexion
+      const { data: authData, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
-        // Rediriger selon le rôle
-        if (profiles?.role === "etudiant") {
-          window.location.href = "/student-form";
-        } else if (profiles?.role === "enseignant") {
-          window.location.href = "/teacher-dashboard";
-        } else if (profiles?.role === "admin") {
-          window.location.href = "/admin-dashboard";
-        }
+      // 2. Gérer les erreurs de connexion
+      if (signInError) {
+        console.error("Erreur de connexion:", signInError);
+        setError("Email ou mot de passe invalide. Veuillez réessayer.");
+        setIsLoading(false);
+        return;
       }
-      router.push("/protected");
+
+      // 3. Vérifier si l'utilisateur est bien retourné
+      if (!authData.user) {
+        setError(
+          "Impossible de récupérer les informations utilisateur après la connexion.",
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      // 4. Récupérer le profil et le rôle
+      //    Note : Assurez-vous que RLS permet à l'utilisateur de lire son propre profil !
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", authData.user.id)
+        .single(); // .single() retourne un seul objet ou null/erreur
+
+      if (profileError) {
+        console.error("Erreur de récupération du profil:", profileError);
+        setError(
+          "Impossible de récupérer le rôle utilisateur. Redirection par défaut.",
+        );
+        router.push(REDIRECT_PATHS.default);
+        router.refresh(); // Rafraîchit l'état côté serveur
+        setIsLoading(false);
+        return;
+      }
+
+      const userRole = profileData?.role;
+      console.log("Rôle de l'utilisateur connecté :", userRole); // Pour débogage
+
+      // 5. Rediriger selon le rôle
+      let redirectPath = REDIRECT_PATHS.default; // Chemin par défaut
+
+      if (userRole === "admin") {
+        redirectPath = REDIRECT_PATHS.admin;
+      } else if (userRole === "data_entry_personnel") {
+        // <<== AJOUTÉ ICI
+        redirectPath = REDIRECT_PATHS.data_entry_personnel;
+      } else if (userRole === "etudiant") {
+        redirectPath = REDIRECT_PATHS.etudiant;
+      } else if (userRole === "enseignant") {
+        redirectPath = REDIRECT_PATHS.enseignant;
+      } else {
+        console.warn(
+          `Rôle non reconnu ('${userRole}') ou profil manquant. Redirection par défaut.`,
+        );
+      }
+
+      router.push(redirectPath);
+      router.refresh(); // Important pour mettre à jour les composants serveur
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
+      console.error("Erreur inattendue lors du login:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Une erreur inconnue est survenue.",
+      );
+      setIsLoading(false); // Assurer que le chargement s'arrête en cas d'erreur inattendue
     }
+    // Pas besoin de setIsLoading(false) ici car la redirection va changer de page
   };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl">Connexion</CardTitle>
           <CardDescription>
-            Veiullez entrer votre email pour vous connectez
+            Veuillez entrer votre email et mot de passe pour vous connecter.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -86,6 +142,7 @@ export function LoginForm({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
               <div className="grid gap-2">
@@ -95,7 +152,7 @@ export function LoginForm({
                     href="/auth/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                    Mot de passe oublié?
+                    Mot de passe oublié ?
                   </Link>
                 </div>
                 <Input
@@ -104,15 +161,16 @@ export function LoginForm({
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Connexion..." : "Se Connectez"}
+                {isLoading ? "Connexion..." : "Se Connecter"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Pas de compte?{" "}
+              Pas de compte ?{" "}
               <Link
                 href="/auth/sign-up"
                 className="underline underline-offset-4"

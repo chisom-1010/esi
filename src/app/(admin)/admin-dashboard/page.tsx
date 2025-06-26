@@ -66,7 +66,7 @@ async function getDashboardStats() {
 
 export default async function AdminDashboardPage() {
   const supabase = createSupabaseServerClient();
-  const stats = await getDashboardStats(supabase);
+  const stats = await getDashboardStats();
 
   return (
     <div>
