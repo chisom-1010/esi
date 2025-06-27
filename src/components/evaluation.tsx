@@ -1,7 +1,7 @@
 "use client";
 // components/EvaluationForm.tsx
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const EvaluationForm = () => {
-  const supabase = createClient();
+  const supabase = createSupabaseBrowserClient();
 
   const { register, handleSubmit } = {
     register: () => ({}),
