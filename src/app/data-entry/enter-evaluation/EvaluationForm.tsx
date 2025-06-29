@@ -69,7 +69,6 @@ export function EvaluationForm({
     setIsLoading(true);
 
     console.log("La fonction handleSubmit a été déclenchée !");
-    alert("Le bouton de soumission a bien été cliqué.");
 
     if (!selectedEnseignement) {
       toast.error("Veuillez sélectionner un enseignement à évaluer.");
@@ -88,6 +87,7 @@ export function EvaluationForm({
       ([critereId, optionId]) => ({
         critere_id: critereId,
         option_reponse_id: optionId,
+        points: selectedOption ? selectedOption.points : 0,
       }),
     );
 

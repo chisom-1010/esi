@@ -5,7 +5,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   const cookieStore = cookies();
-  const supabase = await createSupabaseServerClient(); // <<== IMPORTANT: Revenir au client serveur standard
+  const supabase = await createSupabaseServerClient();
 
   try {
     const {
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Appeler la NOUVELLE fonction RPC (sans p_saisi_par_id)
+    // Appeler la fonction RPC (sans p_saisi_par_id)
     const { data: newFicheId, error: rpcError } = await supabase.rpc(
       "create_evaluation_fiche",
       {

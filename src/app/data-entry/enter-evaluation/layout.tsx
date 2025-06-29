@@ -3,9 +3,9 @@ import { createServerClient } from "@supabase/ssr"; // Ou votre client serveur @
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
-import { AdminSidebar } from "@/components/layout/AdminSidebar"; // À créer
-import { EtudiantHeader } from "@/components/layout/EtudiantHeader"; // À créer
-import { createSupabaseServerClient } from "@/lib/supabase/server"; // Assurez-vous d'utiliser votre helper configuré
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
+import { EtudiantHeader } from "@/components/layout/EtudiantHeader";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function getUserRoleServer(supabase: any): Promise<string | null> {
   // ... (Votre fonction existante pour récupérer le rôle)
