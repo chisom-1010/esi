@@ -38,7 +38,11 @@ async function getDashboardData() {
 
   // Traitement des données et retour
   return {
-    stats: statsData.data || { evaluations: 0, enseignants: 0, users: 0 },
+    stats: statsData.data || {
+      evaluations: 0,
+      enseignants: 0,
+      utilisateurs: 0,
+    },
     topTeachers:
       topTeachersData.data?.map((teacher: any) => ({
         name: teacher.nom_complet,
@@ -128,7 +132,7 @@ export default async function AdminDashboardPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.users}</div>
+            <div className="text-2xl font-bold">{stats.utilisateurs}</div>
             <p className="text-xs text-muted-foreground">Étudiants et admins</p>
           </CardContent>
         </Card>
