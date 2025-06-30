@@ -57,9 +57,6 @@ export function TeacherClientTable({
               onSuccess={handleFormSuccess}
               onSuccessAction={handleFormSuccess}
             />
-            <p className="py-4 text-center">
-              Le formulaire d'ajout sera placé ici.
-            </p>
             <DialogFooter>
               <Button
                 type="button"
