@@ -34,6 +34,7 @@ export async function POST(request: Request) {
         p_enseignement_id: enseignementId,
         p_commentaire: commentaire,
         p_reponses: responses,
+        p_saisi_par_id: user.id,
       },
     );
 
