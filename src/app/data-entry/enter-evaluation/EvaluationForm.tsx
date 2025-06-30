@@ -43,7 +43,7 @@ type CategorieType = {
 interface EvaluationFormProps {
   enseignements: EnseignementType[];
   categories: CategorieType[];
-  options: OptionType[];
+  options: OptionType[]; // S'assurer que les options sont passées en props
 }
 
 export function EvaluationForm({
@@ -84,11 +84,15 @@ export function EvaluationForm({
     }
 
     const responsesPayload = Object.entries(responses).map(
-      ([critereId, optionId]) => ({
-        critere_id: critereId,
-        option_reponse_id: optionId,
-        points: selectedOption ? selectedOption.points : 0,
-      }),
+      ([critereId, optionId]) => {
+        // --- CORRECTION ICI : Définir selectedOption à l'intérieur de la boucle map ---
+        const selectedOption = options.find((opt) => opt.id === optionId);
+        return {
+          critere_id: critereId,
+          option_reponse_id: optionId,
+          points: selectedOption ? selectedOption.points : 0, // Utiliser selectedOption ici
+        };
+      },
     );
 
     try {
