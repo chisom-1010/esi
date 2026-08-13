@@ -56,7 +56,7 @@ export default async function Home() {
             <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
               Fonctionnalités Clés
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <FeatureCard
                 icon={<Users className="h-8 w-8 text-primary" />}
                 title="Évaluations Structurées"
@@ -66,11 +66,6 @@ export default async function Home() {
                 icon={<BarChart className="h-8 w-8 text-primary" />}
                 title="Statistiques et Rapports"
                 description="Générez des classements et analyses par enseignant, matière ou filière en temps réel."
-              />
-              <FeatureCard
-                icon={<Mail className="h-8 w-8 text-primary" />}
-                title="Notifications & Suivi"
-                description="Soyez notifié des nouvelles évaluations et suivez facilement le taux de participation."
               />
               <FeatureCard
                 icon={<FileText className="h-8 w-8 text-primary" />}
@@ -119,7 +114,7 @@ export default async function Home() {
 
       {/* Footer */}
       <footer className="py-6 bg-gray-100 dark:bg-gray-800 text-center text-sm text-gray-500 dark:text-gray-400">
-        © {new Date().getFullYear()} ESI-Eval | Développé avec Passion
+        © {new Date().getFullYear()} SYS-Eval | Développé avec Passion
       </footer>
     </div>
   );

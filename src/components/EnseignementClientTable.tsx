@@ -58,8 +58,8 @@ export function EnseignementClientTable({
         </h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" /> Nouvel Enseignement
+            <Button className="border rounded-4xl cursor-pointer">
+              <PlusCircle className="mr-2 h-4 w-4 " /> Nouvel Enseignement
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -80,13 +80,18 @@ export function EnseignementClientTable({
             />
             <DialogFooter>
               <Button
+                className="border rounded-4xl"
                 type="button"
-                variant="outline"
+                variant="destructive"
                 onClick={() => setIsDialogOpen(false)}
               >
                 Annuler
               </Button>
-              <Button type="submit" form="enseignement-form">
+              <Button
+                className="border rounded-4xl"
+                type="submit"
+                form="enseignement-form"
+              >
                 Ajouter
               </Button>{" "}
               {/* Associe le bouton au formulaire par ID */}
@@ -97,7 +102,7 @@ export function EnseignementClientTable({
       <DataTable
         columns={columns}
         data={data}
-        filterColumn="matiere" // Exemple de colonne pour la recherche
+        filterColumn="matiere"
         filterPlaceholder="Rechercher par matière..."
       />
     </div>

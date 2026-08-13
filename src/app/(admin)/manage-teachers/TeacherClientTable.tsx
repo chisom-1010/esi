@@ -41,7 +41,7 @@ export function TeacherClientTable({
         </h2>
         <Dialog>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="border rounded-4xl cursor-pointer">
               <PlusCircle className="mr-2 h-4 w-4" /> Nouvel Enseignant
             </Button>
           </DialogTrigger>
@@ -58,14 +58,19 @@ export function TeacherClientTable({
               onSuccessAction={handleFormSuccess}
             />
             <DialogFooter>
-              <Button
+              {/* <Button
+                className="border rounded-4xl cursor-pointer"
                 type="button"
-                variant="outline"
+                variant="destructive"
                 onClick={() => setIsDialogOpen(false)}
               >
                 Annuler
-              </Button>
-              <Button type="submit" form="teacher-form">
+              </Button> */}
+              <Button
+                className="border rounded-4xl cursor-pointer"
+                type="submit"
+                form="teacher-form"
+              >
                 Ajouter
               </Button>
             </DialogFooter>

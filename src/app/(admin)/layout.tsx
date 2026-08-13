@@ -1,14 +1,13 @@
 // app/(admin)/layout.tsx
-import { createServerClient } from "@supabase/ssr"; // Ou votre client serveur @supabase/ssr
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
-import { AdminSidebar } from "@/components/layout/AdminSidebar"; // À créer
-import { AdminHeader } from "@/components/layout/AdminHeader"; // À créer
-import { createSupabaseServerClient } from "@/lib/supabase/server"; // Assurez-vous d'utiliser votre helper configuré
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
+import { AdminHeader } from "@/components/layout/AdminHeader";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function getUserRoleServer(supabase: any): Promise<string | null> {
-  // ... (Votre fonction existante pour récupérer le rôle)
   const {
     data: { user },
     error,

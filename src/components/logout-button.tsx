@@ -13,5 +13,9 @@ export function LogoutButton() {
     router.push("/auth/login");
   };
 
-  return <Button onClick={logout}>Déconnecter</Button>;
+  return (
+    <Button className="border rounded-4xl cursor-pointer" onClick={logout}>
+      Déconnecter
+    </Button>
+  );
 }

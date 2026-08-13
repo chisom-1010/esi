@@ -1,10 +1,11 @@
-// app/(admin)/layout.tsx
+// app/data-entry/enter-evaluation/layout.tsx
 import { createServerClient } from "@supabase/ssr"; // Ou votre client serveur @supabase/ssr
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
-import { AdminSidebar } from "@/components/layout/AdminSidebar";
 import { EtudiantHeader } from "@/components/layout/EtudiantHeader";
+import { AdminHeader } from "@/components/layout/AdminHeader";
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function getUserRoleServer(supabase: any): Promise<string | null> {
@@ -36,11 +37,18 @@ export default async function AdminLayout({
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Barre Latérale ADmin*/}
+
+      {role === "admin" ? <AdminSidebar /> : null}
+
       {/* Contenu Principal */}
       <div className="flex flex-col flex-1 w-full">
         {/* En-tête */}
-        <EtudiantHeader userEmail={user?.email} />
-
+        {role === "admin" ? (
+          <AdminHeader userEmail={user?.email} />
+        ) : (
+          <EtudiantHeader userEmail={user?.email} />
+        )}
         {/* Espace de Contenu */}
         <main className="h-full overflow-y-auto">
           <div className="container px-6 py-8 mx-auto grid">

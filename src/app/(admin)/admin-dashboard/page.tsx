@@ -167,25 +167,17 @@ export default async function AdminDashboardPage() {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <Link href="/data-entry/enter-evaluation" passHref>
-              <Button className="w-full">Nouvelle Saisie d'Évaluation</Button>
-            </Link>
-            <Link href="/user-management" passHref>
-              <Button variant="outline" className="w-full">
-                Gérer les Utilisateurs
-              </Button>
-            </Link>
-            <Link href="/reports" passHref>
-              <Button variant="outline" className="w-full">
-                Voir tous les Rapports
+              <Button className="w-full cursor-pointer">
+                Nouvelle Saisie d'Évaluation
               </Button>
             </Link>
             <Link href="/manage-teachings" passHref>
-              <Button variant="secondary" className="w-full">
+              <Button variant="secondary" className="w-full cursor-pointer">
                 Gérer les Enseignements
               </Button>
             </Link>
             <Link href="/manage-teachers" passHref>
-              <Button variant="secondary" className="w-full">
+              <Button variant="secondary" className="w-full cursor-pointer">
                 Gérer les Enseignants
               </Button>
             </Link>
