@@ -3,26 +3,26 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import SignUpForm from "@/components/sign-up-form"; // Assurez-vous que ce chemin est correct
 import { redirect } from "next/navigation";
 
-// Type pour les classes
-type ClasseType = {
+// Type pour les filières
+type FiliereType = {
   id: string;
-  nom_classe: string;
+  nom_filiere: string;
   niveau: string;
 };
 
-// Fonction pour récupérer les classes
-async function getClasses(): Promise<ClasseType[]> {
+// Fonction pour récupérer les filières
+async function getFilieres(): Promise<FiliereType[]> {
   const supabase = await createSupabaseServerClient();
   // On utilise createSupabaseServerClient même si RLS permet anon,
   // c'est une bonne pratique pour les Server Components.
   const { data, error } = await supabase
-    .from("classe")
-    .select("id, nom_classe, niveau")
+    .from("filiere")
+    .select("id, nom_filiere, niveau")
     .order("niveau")
-    .order("nom_classe");
+    .order("nom_filiere");
 
   if (error) {
-    console.error("Erreur de récupération des classes:", error);
+    console.error("Erreur de récupération des filières:", error);
     return [];
   }
   return data;
@@ -39,12 +39,12 @@ export default async function SignUpPage() {
     redirect("/dashboard"); // Rediriger s'il est déjà loggé
     }*/
 
-  const classes = await getClasses();
+  const filieres = await getFilieres();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md p-4">
-        <SignUpForm classes={classes} />
+        <SignUpForm filieres={filieres} />
       </div>
     </div>
   );

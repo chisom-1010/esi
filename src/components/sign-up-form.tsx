@@ -25,14 +25,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner"; // Pour les notifications
 
-type ClasseType = {
+type FiliereType = {
   id: string;
-  nom_classe: string;
+  nom_filiere: string;
   niveau: string;
 };
 
 interface SignUpFormProps extends React.ComponentPropsWithoutRef<"div"> {
-  classes: ClasseType[];
+  filieres: FiliereType[];
 }
 
 const supabase = createClient(
@@ -41,14 +41,14 @@ const supabase = createClient(
 );
 
 export default function SignUpForm({
-  classes,
+  filieres,
   className,
   ...props
 }: SignUpFormProps) {
   const [nomComplet, setNomComplet] = useState(""); // <<== AJOUTÉ
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [classeId, setClasseId] = useState<string>(""); // <<== AJOUTÉ
+  const [filiereId, setFiliereId] = useState<string>(""); // <<== AJOUTÉ
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -58,8 +58,8 @@ export default function SignUpForm({
     setIsLoading(true);
     setError(null);
 
-    if (!classeId) {
-      setError("Veuillez sélectionner votre classe.");
+    if (!filiereId) {
+      setError("Veuillez sélectionner votre filière.");
       setIsLoading(false);
       return;
     }
@@ -76,7 +76,7 @@ export default function SignUpForm({
         options: {
           data: {
             nom_complet: nomComplet, // <<== ENVOYÉ
-            classe_id: classeId, // <<== ENVOYÉ
+            filiere_id: filiereId, // <<== ENVOYÉ
           },
           // Optionnel: Si vous voulez rediriger vers une page de confirmation
           // emailRedirectTo: `${location.origin}/auth/callback`,
@@ -161,27 +161,27 @@ export default function SignUpForm({
                   disabled={isLoading}
                 />
               </div>
-              {/* Sélection Classe */}
+              {/* Sélection Filière */}
               <div className="grid gap-2">
-                <Label htmlFor="classe-select">Classe</Label>
+                <Label htmlFor="filiere-select">Filière</Label>
                 <Select
-                  value={classeId}
-                  onValueChange={setClasseId}
+                  value={filiereId}
+                  onValueChange={setFiliereId}
                   required
                   disabled={isLoading}
                 >
-                  <SelectTrigger id="classe-select">
-                    <SelectValue placeholder="Sélectionnez votre classe..." />
+                  <SelectTrigger id="filiere-select">
+                    <SelectValue placeholder="Sélectionnez votre filière..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {classes.map((classe) => (
-                      <SelectItem key={classe.id} value={classe.id}>
-                        {`${classe.nom_classe} (${classe.niveau})`}
+                    {filieres.map((filiere) => (
+                      <SelectItem key={filiere.id} value={filiere.id}>
+                        {`${filiere.nom_filiere} (${filiere.niveau})`}
                       </SelectItem>
                     ))}
-                    {classes.length === 0 && (
+                    {filieres.length === 0 && (
                       <div className="p-4 text-sm text-muted-foreground">
-                        Aucune classe trouvée.
+                        Aucune filière trouvée.
                       </div>
                     )}
                   </SelectContent>

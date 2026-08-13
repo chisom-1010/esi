@@ -65,7 +65,7 @@ export default async function Home() {
               <FeatureCard
                 icon={<BarChart className="h-8 w-8 text-primary" />}
                 title="Statistiques et Rapports"
-                description="Générez des classements et analyses par enseignant, matière ou classe en temps réel."
+                description="Générez des classements et analyses par enseignant, matière ou filière en temps réel."
               />
               <FeatureCard
                 icon={<Mail className="h-8 w-8 text-primary" />}

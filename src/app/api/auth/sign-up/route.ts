@@ -1,4 +1,3 @@
-// Move sign-up logic to a server route or action
 // app/api/auth/sign-up/route.ts
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
@@ -9,14 +8,14 @@ const supabase = createClient(
 );
 
 export async function POST(req: Request) {
-  const { email, password, nom_complet, classe_id } = await req.json();
+  const { email, password, nom_complet, filiere_id } = await req.json();
 
   const { error } = await supabase.auth.admin.createUser({
     email,
     password,
     user_metadata: {
       nom_complet,
-      classe_id,
+      filiere_id,
     },
   });
 

@@ -13,7 +13,7 @@ ESI-Eval est une application web moderne conçue pour digitaliser et optimiser l
 * **Portail d'Évaluation pour Étudiants :** Interface simple et intuitive pour que les étudiants puissent remplir et soumettre les fiches d'évaluation.
 * **Tableau de Bord Administrateur :** Une vue d'ensemble complète avec des statistiques clés (nombre d'évaluations, d'utilisateurs, d'enseignants) et des visualisations de données.
 * **Gestion des Utilisateurs :** Interface pour lister, rechercher, et gérer les rôles des utilisateurs (étudiants, administrateurs).
-* **Gestion des Entités :** Panneaux dédiés pour administrer les enseignants, les matières, les classes et les enseignements.
+* **Gestion des Entités :** Panneaux dédiés pour administrer les enseignants, les matières, les filières et les enseignements.
 * **Rapports et Statistiques :** Génération de classements, comme le "Top 5 des Enseignants", basés sur les scores moyens.
 * **Authentification Sécurisée :** Système de connexion et d'inscription basé sur les rôles, avec protection des routes.
 
@@ -95,7 +95,7 @@ SUPABASE_SERVICE_ROLE_KEY=VOTRE_SUPABASE_SERVICE_ROLE_KEY
 
 Pour que l'application fonctionne, vous devez créer les tables et les fonctions dans votre base de données Supabase. Exécutez les scripts SQL que nous avons créés dans l'**Éditeur SQL** de Supabase. Assurez-vous d'exécuter dans l'ordre :
 1.  Le script de création des tables.
-2.  Le script de peuplement des données (pour avoir des classes, enseignants, etc.).
+2.  Le script de peuplement des données (pour avoir des filières, enseignants, etc.).
 3.  Les scripts de création des fonctions RPC (`get_dashboard_stats`, `get_top_teachers`, `get_all_enseignements`, etc.).
 
 ### 6. Lancer le Serveur de Développement

@@ -17,7 +17,7 @@ import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import {
   AnneeAcademique,
-  Classe,
+  Filiere,
   Enseignant,
   Enseignement,
   Matiere,
@@ -29,7 +29,7 @@ interface EnseignementClientTableProps {
   data: Enseignement[]; // Les données d'enseignements (avec jointures)
   enseignants: Enseignant[];
   matieres: Matiere[];
-  classes: Classe[];
+  filieres: Filiere[];
   anneesAcademiques: AnneeAcademique[];
   // Callback pour rafraîchir les données après ajout
   onEnseignementAddedAction: () => void;
@@ -39,7 +39,7 @@ export function EnseignementClientTable({
   data,
   enseignants,
   matieres,
-  classes,
+  filieres,
   anneesAcademiques,
   onEnseignementAddedAction,
 }: EnseignementClientTableProps) {
@@ -75,7 +75,7 @@ export function EnseignementClientTable({
               onSuccessAction={handleFormSuccess}
               enseignants={enseignants}
               matieres={matieres}
-              classes={classes}
+              filieres={filieres}
               anneesAcademiques={anneesAcademiques}
             />
             <DialogFooter>

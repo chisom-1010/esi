@@ -87,7 +87,7 @@ export default async function EnterEvaluationPage() {
           </CardTitle>
           <CardDescription>
             Aucun enseignement n'a été trouvé pour votre profil. Si vous êtes
-            étudiant, vérifiez que vous êtes bien assigné à une classe contenant
+            étudiant, vérifiez que vous êtes bien assigné à une filière contenant
             des cours.
           </CardDescription>
         </CardHeader>

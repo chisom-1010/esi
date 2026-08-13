@@ -16,7 +16,7 @@ export async function Header() {
         <div className="flex justify-between items-center py-4">
           <Link href="/" className="flex items-center space-x-2">
             <GraduationCap className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">ESI-Eval</span>
+            <span className="text-xl font-bold text-gray-900">SYS-Eval</span>
           </Link>
           <nav>
             {user ? (

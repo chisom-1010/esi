@@ -27,9 +27,9 @@ export interface Matiere {
   created_at: string; // timestampz
 }
 
-export interface Classe {
+export interface Filiere {
   id: string; // uuid
-  nom_classe: string; // text
+  nom_filiere: string; // text
   niveau: string; // text
   created_at: string; // timestampz
 }
@@ -46,13 +46,13 @@ export interface Enseignement {
   id: string; // uuid
   enseignant_id: string; // uuid (FK)
   matiere_id: string; // uuid (FK)
-  classe_id: string; // uuid (FK)
+  filiere_id: string; // uuid (FK)
   annee_academique_id: string; // uuid (FK)
   volume_horaire_prevu: number; // int4
   created_at: string; // timestampz
   enseignant?: Enseignant;
   matiere?: Matiere;
-  classe?: Classe;
+  filiere?: Filiere;
   annee_academique?: AnneeAcademique;
 }
 // --- FIN DES TYPES ---
@@ -81,14 +81,14 @@ export const columns: ColumnDef<Enseignement>[] = [
     ),
   },
   {
-    accessorKey: "classe",
-    header: "Classe",
-    cell: ({ row }) => <div>{row.original.classe?.nom_classe || "N/A"}</div>,
+    accessorKey: "filiere",
+    header: "Filiere",
+    cell: ({ row }) => <div>{row.original.filiere?.nom_filiere || "N/A"}</div>,
   },
   {
-    accessorKey: "classe.niveau",
+    accessorKey: "filiere.niveau",
     header: "Niveau",
-    cell: ({ row }) => <div>{row.original.classe?.niveau || "N/A"}</div>,
+    cell: ({ row }) => <div>{row.original.filiere?.niveau || "N/A"}</div>,
   },
   {
     accessorKey: "annee_academique",

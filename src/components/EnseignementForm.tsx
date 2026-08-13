@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Enseignant, Matiere, Classe, AnneeAcademique } from "./columns"; // Importer les types définis
+import { Enseignant, Matiere, Filiere, AnneeAcademique } from "./columns"; // Importer les types définis
 
 // Définir le schéma Zod pour la validation du formulaire d'enseignement
 const formSchema = z.object({
@@ -33,9 +33,9 @@ const formSchema = z.object({
   matiere_id: z
     .string()
     .uuid({ message: "Veuillez sélectionner une matière valide." }),
-  classe_id: z
+  filiere_id: z
     .string()
-    .uuid({ message: "Veuillez sélectionner une classe valide." }),
+    .uuid({ message: "Veuillez sélectionner une filière valide." }),
   annee_academique_id: z
     .string()
     .uuid({ message: "Veuillez sélectionner une année académique valide." }),
@@ -55,7 +55,7 @@ interface EnseignementFormProps {
   onSuccessAction: () => void; // Callback pour fermer le dialogue ou rafraîchir les données
   enseignants: Enseignant[];
   matieres: Matiere[];
-  classes: Classe[];
+  filieres: Filiere[];
   anneesAcademiques: AnneeAcademique[];
 }
 
@@ -63,7 +63,7 @@ export function EnseignementForm({
   onSuccessAction,
   enseignants,
   matieres,
-  classes,
+  filieres,
   anneesAcademiques,
 }: EnseignementFormProps) {
   const form = useForm<EnseignementFormValues>({
@@ -71,7 +71,7 @@ export function EnseignementForm({
     defaultValues: {
       enseignant_id: "",
       matiere_id: "",
-      classe_id: "",
+      filiere_id: "",
       annee_academique_id: "",
       volume_horaire_prevu: 0,
     },
@@ -85,7 +85,7 @@ export function EnseignementForm({
           {
             enseignant_id: values.enseignant_id,
             matiere_id: values.matiere_id,
-            classe_id: values.classe_id,
+            filiere_id: values.filiere_id,
             annee_academique_id: values.annee_academique_id,
             volume_horaire_prevu: values.volume_horaire_prevu,
           },
@@ -174,23 +174,23 @@ export function EnseignementForm({
           )}
         />
 
-        {/* Sélecteur Classe */}
+        {/* Sélecteur Filière */}
         <FormField
           control={form.control}
-          name="classe_id"
+          name="filiere_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Classe</FormLabel>
+              <FormLabel>Filière</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionnez une classe" />
+                    <SelectValue placeholder="Sélectionnez une filière" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {classes.map((classe) => (
-                    <SelectItem key={classe.id} value={classe.id}>
-                      {classe.nom_classe} ({classe.niveau})
+                  {filieres.map((filiere) => (
+                    <SelectItem key={filiere.id} value={filiere.id}>
+                      {filiere.nom_filiere} ({filiere.niveau})
                     </SelectItem>
                   ))}
                 </SelectContent>

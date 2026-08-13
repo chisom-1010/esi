@@ -29,7 +29,7 @@ type EnseignementType = {
   anneeacademique: { nom_annee: string } | null;
   matiere: { nom_matiere: string } | null;
   enseignant: { nom_complet: string } | null;
-  classe: { nom_classe: string; niveau: string } | null;
+  filiere: { nom_filiere: string; niveau: string } | null;
 };
 type OptionType = { id: string; libelle: string; points: number };
 type CritereType = { id: string; texte_critere: string };
@@ -122,7 +122,8 @@ export function EvaluationForm({
   };
 
   const validEnseignements = enseignements.filter(
-    (ens) => ens.enseignant && ens.matiere && ens.classe && ens.anneeacademique,
+    (ens) =>
+      ens.enseignant && ens.matiere && ens.filiere && ens.anneeacademique,
   );
 
   return (
@@ -146,7 +147,7 @@ export function EvaluationForm({
               {/* Utiliser la liste filtrée validEnseignements */}
               {validEnseignements.map((ens) => (
                 <SelectItem key={ens.id} value={ens.id}>
-                  {`${ens.enseignant?.nom_complet || "N/A"} - ${ens.matiere?.nom_matiere || "N/A"} - ${ens.classe?.nom_classe || "N/A"} (${ens.anneeacademique?.nom_annee || "N/A"})`}
+                  {`${ens.enseignant?.nom_complet || "N/A"} - ${ens.matiere?.nom_matiere || "N/A"} - ${ens.filiere?.nom_filiere || "N/A"} (${ens.anneeacademique?.nom_annee || "N/A"})`}
                 </SelectItem>
               ))}
             </SelectContent>

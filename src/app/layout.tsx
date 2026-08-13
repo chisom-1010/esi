@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Esi-Eval",
+  title: "SYS-Eval",
   description: "Système d'Évaluation des Enseignements",
 };
 

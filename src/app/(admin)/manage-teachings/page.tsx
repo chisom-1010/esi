@@ -11,7 +11,7 @@ import { EnseignementClientTable } from "@/components/EnseignementClientTable";
 import {
   Enseignant,
   Matiere,
-  Classe,
+  Filiere,
   AnneeAcademique,
   Enseignement,
 } from "@/components/columns"; // Assurez-vous que le chemin est correct
@@ -50,14 +50,14 @@ async function getMatieres(): Promise<Matiere[]> {
   return data as Matiere[];
 }
 
-async function getClasses(): Promise<Classe[]> {
+async function getFilieres(): Promise<Filiere[]> {
   const supabase = createSupabaseServiceRoleClient();
-  const { data, error } = await supabase.from("classe").select("*");
+  const { data, error } = await supabase.from("filiere").select("*");
   if (error) {
-    console.error("Erreur lors de la récupération des classes:", error);
+    console.error("Erreur lors de la récupération des filières:", error);
     return [];
   }
-  return data as Classe[];
+  return data as Filiere[];
 }
 
 async function getAnneesAcademiques(): Promise<AnneeAcademique[]> {
@@ -105,12 +105,12 @@ export default async function ManageTeachingsPage() {
   }
 
   // Récupérer toutes les données nécessaires en parallèle
-  const [enseignements, enseignants, matieres, classes, anneesAcademiques] =
+  const [enseignements, enseignants, matieres, filieres, anneesAcademiques] =
     await Promise.all([
       getEnseignements(), // Données pour le tableau (via RPC)
       getEnseignants(), // Données pour les dropdowns
       getMatieres(), // Données pour les dropdowns
-      getClasses(), // Données pour les dropdowns
+      getFilieres(), // Données pour les dropdowns
       getAnneesAcademiques(), // Données pour les dropdowns
     ]);
 
@@ -128,7 +128,7 @@ export default async function ManageTeachingsPage() {
           data={enseignements}
           enseignants={enseignants}
           matieres={matieres}
-          classes={classes}
+          filieres={filieres}
           anneesAcademiques={anneesAcademiques}
           onEnseignementAddedAction={handleRefreshData} // Passe la fonction de rafraîchissement au composant client
         />
