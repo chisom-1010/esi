@@ -71,7 +71,13 @@ export const columns: ColumnDef<Teacher>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem>Voir les détails</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  (window.location.href = `/api/admin/teachers/${teacher.id}/evaluations-export`)
+                }
+              >
+                Voir les détails (CSV)
+              </DropdownMenuItem>
               <DropdownMenuItem>Modifier l'enseignant</DropdownMenuItem>
               <DropdownMenuItem className="text-red-600 focus:text-red-600">
                 Supprimer
