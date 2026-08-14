@@ -40,20 +40,27 @@ export type TeacherFormValues = z.infer<typeof formSchema>;
 
 interface TeacherFormProps {
   onSuccess: () => void; // Callback to close dialog or refresh data on success
-  // Removed initialData as the request is to "recreate" for new teacher.
-  // If editing is needed, add initialData back and adjust onSubmit logic.
+  /** Si fourni, le formulaire passe en mode édition (PATCH au lieu d'un insert). */
+  initialData?: {
+    id: string;
+    nom_complet: string;
+    email: string;
+    telephone?: string | null;
+  };
 }
 
 export function TeacherForm({
   onSuccessAction,
+  initialData,
 }: TeacherFormProps & { onSuccessAction: () => void }) {
+  const isEditMode = !!initialData;
+
   const form = useForm<TeacherFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      // Default values for a new teacher
-      nom_complet: "",
-      email: "",
-      telephone: "",
+      nom_complet: initialData?.nom_complet ?? "",
+      email: initialData?.email ?? "",
+      telephone: initialData?.telephone ?? "",
     },
   });
 
@@ -61,6 +68,28 @@ export function TeacherForm({
   async function onSubmit(values: TeacherFormValues) {
     try {
       const { nom_complet, email, telephone } = values;
+
+      if (isEditMode) {
+        const response = await fetch(`/api/admin/teachers/${initialData!.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nom_complet,
+            email,
+            ...(telephone ? { telephone } : {}),
+          }),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.error || "Échec de la mise à jour.");
+        }
+
+        toast("Enseignant modifié!", {
+          description: `"${nom_complet}" a été mis à jour avec succès.`,
+        });
+        onSuccessAction();
+        return;
+      }
 
       // Insert data into the 'enseignant' table
       const { data, error } = await createSupabaseBrowserClient()
@@ -89,12 +118,20 @@ export function TeacherForm({
       form.reset(); // Reset form fields after successful submission
       onSuccessAction(); // Call success callback, typically to close the dialog
     } catch (error: any) {
-      console.error("Erreur lors de l'ajout de l'enseignant:", error.message);
-      toast("Erreur lors de l'ajout", {
-        description:
-          error.message ||
-          "Une erreur inattendue est survenue lors de l'ajout de l'enseignant.",
-      });
+      console.error(
+        isEditMode
+          ? "Erreur lors de la modification de l'enseignant:"
+          : "Erreur lors de l'ajout de l'enseignant:",
+        error.message,
+      );
+      toast(
+        isEditMode
+          ? "Erreur lors de la modification"
+          : "Erreur lors de l'ajout",
+        {
+          description: error.message || "Une erreur inattendue est survenue.",
+        },
+      );
     }
   }
 
