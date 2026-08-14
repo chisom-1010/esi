@@ -70,15 +70,18 @@ export function TeacherForm({
       const { nom_complet, email, telephone } = values;
 
       if (isEditMode) {
-        const response = await fetch(`/api/admin/teachers/${initialData!.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            nom_complet,
-            email,
-            ...(telephone ? { telephone } : {}),
-          }),
-        });
+        const response = await fetch(
+          `/api/admin/teachers/${initialData!.id}/edit-teacher`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              nom_complet,
+              email,
+              ...(telephone ? { telephone } : {}),
+            }),
+          },
+        );
         const result = await response.json();
         if (!response.ok) {
           throw new Error(result.error || "Échec de la mise à jour.");

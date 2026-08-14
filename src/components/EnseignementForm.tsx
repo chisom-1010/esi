@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client"; // Assurez-vous que le chemin est correct pour votre client Supabase côté client
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
   Select,
   SelectContent,
@@ -23,7 +23,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Enseignant, Matiere, Filiere, AnneeAcademique } from "./columns"; // Importer les types définis
+import {
+  Enseignant,
+  Matiere,
+  Filiere,
+  AnneeAcademique,
+  Enseignement,
+} from "./columns";
 
 // Définir le schéma Zod pour la validation du formulaire d'enseignement
 const formSchema = z.object({
@@ -57,6 +63,8 @@ interface EnseignementFormProps {
   matieres: Matiere[];
   filieres: Filiere[];
   anneesAcademiques: AnneeAcademique[];
+  /** Si fourni, le formulaire passe en mode édition (PATCH au lieu d'un insert). */
+  initialData?: Enseignement;
 }
 
 export function EnseignementForm({
@@ -65,22 +73,46 @@ export function EnseignementForm({
   matieres,
   filieres,
   anneesAcademiques,
+  initialData,
 }: EnseignementFormProps) {
+  const isEditMode = !!initialData;
+
   const form = useForm<EnseignementFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      enseignant_id: "",
-      matiere_id: "",
-      filiere_id: "",
-      annee_academique_id: "",
-      volume_horaire_prevu: 0,
+      enseignant_id: initialData?.enseignant_id ?? "",
+      matiere_id: initialData?.matiere_id ?? "",
+      filiere_id: initialData?.filiere_id ?? "",
+      annee_academique_id: initialData?.annee_academique_id ?? "",
+      volume_horaire_prevu: initialData?.volume_horaire_prevu ?? 0,
     },
   });
 
   async function onSubmit(values: EnseignementFormValues) {
     try {
+      if (isEditMode) {
+        const response = await fetch(
+          `/api/admin/teachings/${initialData!.id}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values),
+          },
+        );
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.error || "Échec de la mise à jour.");
+        }
+
+        toast("Enseignement modifié!", {
+          description: "L'enseignement a été mis à jour avec succès.",
+        });
+        onSuccessAction();
+        return;
+      }
+
       const { data, error } = await createSupabaseBrowserClient()
-        .from("enseignement") // Le nom de votre table des enseignements
+        .from("enseignement")
         .insert([
           {
             enseignant_id: values.enseignant_id,
@@ -90,7 +122,7 @@ export function EnseignementForm({
             volume_horaire_prevu: values.volume_horaire_prevu,
           },
         ])
-        .select(); // Pour récupérer les données insérées
+        .select();
 
       if (error) {
         throw error;
@@ -105,12 +137,20 @@ export function EnseignementForm({
       form.reset();
       onSuccessAction();
     } catch (error: any) {
-      console.error("Erreur lors de l'ajout de l'enseignement:", error.message);
-      toast("Erreur lors de l'ajout", {
-        description:
-          error.message ||
-          "Une erreur inattendue est survenue lors de l'ajout de l'enseignement.",
-      });
+      console.error(
+        isEditMode
+          ? "Erreur lors de la modification de l'enseignement:"
+          : "Erreur lors de l'ajout de l'enseignement:",
+        error.message,
+      );
+      toast(
+        isEditMode
+          ? "Erreur lors de la modification"
+          : "Erreur lors de l'ajout",
+        {
+          description: error.message || "Une erreur inattendue est survenue.",
+        },
+      );
     }
   }
 
@@ -128,7 +168,7 @@ export function EnseignementForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Enseignant</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Sélectionnez un enseignant" />
@@ -153,9 +193,8 @@ export function EnseignementForm({
           name="matiere_id"
           render={({ field }) => (
             <FormItem>
-              EnseugnementFormEnseugnementForm
               <FormLabel>Matière</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Sélectionnez une matière" />
@@ -181,7 +220,7 @@ export function EnseignementForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Filière</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Sélectionnez une filière" />
@@ -207,7 +246,7 @@ export function EnseignementForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Année Académique</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Sélectionnez une année académique" />

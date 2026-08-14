@@ -161,13 +161,18 @@ export function TeacherClientTable({
           )}
           <DialogFooter>
             <Button
+              className="border rounded-4xl cursor-pointer"
               type="button"
               variant="outline"
               onClick={() => setEditingTeacher(null)}
             >
               Annuler
             </Button>
-            <Button type="submit" form="teacher-form">
+            <Button
+              className="border rounded-4xl cursor-pointer"
+              type="submit"
+              form="teacher-form"
+            >
               Enregistrer
             </Button>
           </DialogFooter>
@@ -195,6 +200,7 @@ export function TeacherClientTable({
           </DialogHeader>
           <DialogFooter>
             <Button
+              className="border rounded-4xl cursor-pointer"
               type="button"
               variant="outline"
               onClick={() => setDeletingTeacher(null)}
@@ -203,6 +209,7 @@ export function TeacherClientTable({
               Annuler
             </Button>
             <Button
+              className="border rounded-4xl cursor-pointer"
               type="button"
               variant="destructive"
               onClick={handleConfirmDelete}
