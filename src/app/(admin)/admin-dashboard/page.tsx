@@ -181,6 +181,11 @@ export default async function AdminDashboardPage() {
                 Gérer les Enseignants
               </Button>
             </Link>
+            <Link href="/manage-annes-academiques" passHref>
+              <Button variant="secondary" className="w-full cursor-pointer">
+                Gérer les Années Académiques
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

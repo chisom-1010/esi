@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "create-admin": "bun run scripts/create-admin.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",

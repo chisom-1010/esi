@@ -28,10 +28,16 @@ type RoleChangeHandler = (
   newRole: "admin" | "data_entry_personnel",
 ) => Promise<void>;
 
-// Fonction pour générer les colonnes en passant le handler
-export const createUserColumns = (
-  handleRoleChange: RoleChangeHandler,
-): ColumnDef<UserProfile>[] => [
+type DeleteHandler = (user: UserProfile) => void;
+
+// Fonction pour générer les colonnes en passant les handlers
+export const createUserColumns = ({
+  onRoleChange,
+  onDelete,
+}: {
+  onRoleChange: RoleChangeHandler;
+  onDelete: DeleteHandler;
+}): ColumnDef<UserProfile>[] => [
   {
     accessorKey: "nom_complet",
     header: "Nom Complet",
@@ -93,7 +99,7 @@ export const createUserColumns = (
             </DropdownMenuItem>
             {currentRole !== "admin" && (
               <DropdownMenuItem
-                onClick={() => handleRoleChange(user.user_id, "admin")}
+                onClick={() => onRoleChange(user.user_id, "admin")}
               >
                 Promouvoir Admin
               </DropdownMenuItem>
@@ -101,13 +107,18 @@ export const createUserColumns = (
             {currentRole === "admin" && (
               <DropdownMenuItem
                 onClick={() =>
-                  handleRoleChange(user.user_id, "data_entry_personnel")
+                  onRoleChange(user.user_id, "data_entry_personnel")
                 }
               >
                 Rétrograder Personnel Saisie
               </DropdownMenuItem>
             )}
-            {/* Ajoutez d'autres actions (supprimer, désactiver...) ici */}
+            <DropdownMenuItem
+              className="text-red-600 focus:text-red-600"
+              onClick={() => onDelete(user)}
+            >
+              Supprimer l'utilisateur
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

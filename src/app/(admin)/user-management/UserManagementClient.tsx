@@ -7,7 +7,16 @@ import {
   type UserProfile,
 } from "@/components/admin/users/columns";
 import { DataTable } from "@/components/data-table";
-import { toast } from "sonner"; // Assurez-vous d'avoir installé et configuré Sonner ou un équivalent
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface UserManagementClientProps {
   users: UserProfile[];
@@ -16,13 +25,16 @@ interface UserManagementClientProps {
 export function UserManagementClient({ users }: UserManagementClientProps) {
   // Utiliser un état pour les données permet une mise à jour dynamique après changement de rôle
   const [data, setData] = React.useState<UserProfile[]>(users);
+  const [deletingUser, setDeletingUser] = React.useState<UserProfile | null>(
+    null,
+  );
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
   // Fonction pour gérer le changement de rôle (appel API)
   const handleRoleChange = async (
     userId: string,
     newRole: "admin" | "data_entry_personnel" | "etudiant",
   ) => {
-    // Confirmation
     if (
       !confirm(
         `Voulez-vous vraiment changer le rôle de cet utilisateur en '${newRole}' ?`,
@@ -31,7 +43,6 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
       return;
     }
 
-    // Mettre à jour l'API
     try {
       const response = await fetch("/api/admin/set-user-role", {
         method: "POST",
@@ -45,7 +56,6 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
         throw new Error(result.error || "Échec de la mise à jour du rôle.");
       }
 
-      // Mettre à jour l'état local pour refléter le changement instantanément
       setData((currentData) =>
         currentData.map((user) =>
           user.user_id === userId ? { ...user, role: newRole } : user,
@@ -58,21 +68,88 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
     }
   };
 
-  // Créer les colonnes en passant le handler.
-  // Utiliser React.useMemo pour éviter de recréer les colonnes à chaque rendu,
-  // sauf si `handleRoleChange` change (ce qui ne devrait pas arriver souvent ici,
-  // mais c'est une bonne pratique).
-  const columns = React.useMemo(() => createUserColumns(handleRoleChange), []);
+  const handleConfirmDelete = async () => {
+    if (!deletingUser) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(
+        `/api/admin/users/${deletingUser.user_id}`,
+        { method: "DELETE" },
+      );
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Échec de la suppression.");
+      }
+
+      setData((current) =>
+        current.filter((u) => u.user_id !== deletingUser.user_id),
+      );
+      toast.success(
+        `"${deletingUser.email || deletingUser.nom_complet}" a été supprimé.`,
+      );
+      setDeletingUser(null);
+    } catch (err: any) {
+      console.error("Erreur lors de la suppression de l'utilisateur:", err);
+      toast.error(err.message || "Une erreur est survenue.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Créer les colonnes en passant les handlers.
+  const columns = React.useMemo(
+    () =>
+      createUserColumns({
+        onRoleChange: handleRoleChange,
+        onDelete: (user) => setDeletingUser(user),
+      }),
+    [],
+  );
 
   return (
     <div className="w-full">
-      {/* On utilise notre composant DataTable générique */}
       <DataTable
         columns={columns}
         data={data}
-        filterColumn="email" // On spécifie la colonne à filtrer
-        filterPlaceholder="Filtrer par email..." // On personnalise le placeholder
+        filterColumn="email"
+        filterPlaceholder="Filtrer par email..."
       />
+
+      <Dialog
+        open={!!deletingUser}
+        onOpenChange={(open) => !open && setDeletingUser(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Supprimer cet utilisateur ?</DialogTitle>
+            <DialogDescription>
+              Cette action est définitive et supprime le compte "
+              {deletingUser?.email || deletingUser?.nom_complet}" ainsi que
+              son accès à l'application.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeletingUser(null)}
+              disabled={isDeleting}
+            >
+              Annuler
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Suppression..." : "Supprimer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

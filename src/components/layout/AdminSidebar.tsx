@@ -1,6 +1,6 @@
 // components/layout/AdminSidebar.tsx
 import Link from "next/link";
-import { Home, Users, BarChart2 } from "lucide-react";
+import { Home, Users, BarChart2, BookOpenText, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AdminSidebar() {
@@ -25,6 +25,36 @@ export function AdminSidebar() {
               >
                 <Home className="w-5 h-5" />
                 <span className="ml-4">Tableau de Bord</span>
+              </Button>
+            </Link>
+          </li>
+
+          <li className="relative px-6 py-1">
+            <Link
+              href="/manage-filieres"
+              className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              <Button
+                type="button"
+                className="cursor-pointer color-black border rounded-4xl w-full"
+              >
+                <BookOpen className="w-5 h-5" />
+                <span className="ml-4">Gestion Filières</span>
+              </Button>
+            </Link>
+          </li>
+
+          <li className="relative px-6 py-1">
+            <Link
+              href="/manage-matieres"
+              className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              <Button
+                type="button"
+                className="cursor-pointer color-black border rounded-4xl w-full"
+              >
+                <BookOpenText className="w-5 h-5" />
+                <span className="ml-4">Gestion Matières</span>
               </Button>
             </Link>
           </li>
