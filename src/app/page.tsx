@@ -2,29 +2,42 @@
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { FeatureCard } from "@/components/FeatureCard";
-import { Mail, Users, BarChart, FileText } from "lucide-react";
+import { Users, BarChart, FileText } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 export default async function Home() {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: profile } = user
-    ? await supabase.from("profiles").select("role").eq("id", user.id).single()
-    : { data: null };
 
-  // Déterminer le lien principal en fonction du statut et du rôle de l'utilisateur
-  let primaryActionHref = "/auth/login"; // Par défaut pour les visiteurs
-  if (user) {
-    if (profile?.role === "etudiant") {
-      primaryActionHref = "/data-entry/enter-evaluation"; // Lien pour les étudiants
-    } else {
-      primaryActionHref = "/admin-dashboard"; // Lien pour les admins/personnel
-    }
+  if (!user) {
+    redirect("/auth/sign-up"); // Rediriger si non connecté
   }
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role !== "admin") {
+    return (
+      <div className="container mx-auto p-8">
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Accès Interdit</AlertTitle>
+          <AlertDescription>
+            Vous devez être administrateur pour accéder à cette page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       {/* En-tête dynamique */}
@@ -42,11 +55,9 @@ export default async function Home() {
             établissement.
           </p>
           <div className="mt-8">
-            <Link href={primaryActionHref}>
               <Button size="lg">
                 {user ? "Accéder à mon espace" : "Commencer l'évaluation"}
               </Button>
-            </Link>
           </div>
         </section>
 
