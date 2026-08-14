@@ -1,3 +1,4 @@
+// Move sign-up logic to a server route or action
 // app/api/auth/sign-up/route.ts
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";

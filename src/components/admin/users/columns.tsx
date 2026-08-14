@@ -29,14 +29,17 @@ type RoleChangeHandler = (
 ) => Promise<void>;
 
 type DeleteHandler = (user: UserProfile) => void;
+type ResetPasswordHandler = (user: UserProfile) => void;
 
 // Fonction pour générer les colonnes en passant les handlers
 export const createUserColumns = ({
   onRoleChange,
   onDelete,
+  onResetPassword,
 }: {
   onRoleChange: RoleChangeHandler;
   onDelete: DeleteHandler;
+  onResetPassword: ResetPasswordHandler;
 }): ColumnDef<UserProfile>[] => [
   {
     accessorKey: "nom_complet",
@@ -113,6 +116,9 @@ export const createUserColumns = ({
                 Rétrograder Personnel Saisie
               </DropdownMenuItem>
             )}
+            <DropdownMenuItem onClick={() => onResetPassword(user)}>
+              Réinitialiser le mot de passe
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-600 focus:text-red-600"
               onClick={() => onDelete(user)}

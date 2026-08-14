@@ -3,7 +3,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import SignUpForm from "@/components/sign-up-form"; // Assurez-vous que ce chemin est correct
 import { redirect } from "next/navigation";
 
-// Type pour les filières
+// Type pour les filières (anciennement nommé "classe" côté front, corrigé
+// pour correspondre à la vraie table "filiere" / colonne profiles.filiere_id)
 type FiliereType = {
   id: string;
   nom_filiere: string;

@@ -40,6 +40,13 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
 
+// Seules les adresses au format prenom.nom@esgis.org sont acceptées pour
+// l'inscription des étudiants. Cette même règle est appliquée côté base de
+// données (trigger enforce_student_email_domain_trigger) : cette validation
+// côté client n'est qu'un retour rapide pour l'utilisateur, pas la seule
+// protection.
+const ESGIS_EMAIL_REGEX = /^[a-z]+(\.[a-z]+)+@esgis\.org$/i;
+
 export default function SignUpForm({
   filieres,
   className,
@@ -48,7 +55,7 @@ export default function SignUpForm({
   const [nomComplet, setNomComplet] = useState(""); // <<== AJOUTÉ
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [filiereId, setFiliereId] = useState<string>(""); // <<== AJOUTÉ
+  const [filiereId, setFiliereId] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -64,19 +71,22 @@ export default function SignUpForm({
       return;
     }
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    console.log(user?.user_metadata);
+    if (!ESGIS_EMAIL_REGEX.test(email.trim())) {
+      setError(
+        "L'adresse email doit être votre adresse institutionnelle, au format prenom.nom@esgis.org.",
+      );
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const { data, error: signUpError } = await (supabase as any).auth.signUp({
-        email,
+        email: email.trim(),
         password,
         options: {
           data: {
             nom_complet: nomComplet, // <<== ENVOYÉ
-            filiere_id: filiereId, // <<== ENVOYÉ
+            filiere_id: filiereId, // <<== ENVOYÉ (corrigé, correspond à profiles.filiere_id)
           },
           // Optionnel: Si vous voulez rediriger vers une page de confirmation
           // emailRedirectTo: `${location.origin}/auth/callback`,
@@ -116,7 +126,9 @@ export default function SignUpForm({
         <CardHeader>
           <CardTitle className="text-2xl">Inscription Étudiant</CardTitle>
           <CardDescription>
-            Créez votre compte pour évaluer vos enseignements.
+            Créez votre compte pour évaluer vos enseignements. L'inscription
+            est réservée aux adresses email institutionnelles (
+            prenom.nom@esgis.org).
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -137,11 +149,11 @@ export default function SignUpForm({
               </div>
               {/* Email */}
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Email institutionnel</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="prenom.nom@esgis.org"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
