@@ -20,11 +20,11 @@ export type MatiereProfile = {
 };
 
 export function createMatiereColumns({
-  onEditAction,
-  onDeleteAction,
+  onEdit,
+  onDelete,
 }: {
-  onEditAction: (matiere: MatiereProfile) => void;
-  onDeleteAction: (matiere: MatiereProfile) => void;
+  onEdit: (matiere: MatiereProfile) => void;
+  onDelete: (matiere: MatiereProfile) => void;
 }): ColumnDef<MatiereProfile>[] {
   return [
     {
