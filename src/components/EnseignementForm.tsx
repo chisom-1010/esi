@@ -229,7 +229,7 @@ export function EnseignementForm({
                 <SelectContent>
                   {filieres.map((filiere) => (
                     <SelectItem key={filiere.id} value={filiere.id}>
-                      {filiere.nom_filiere} ({filiere.niveau})
+                      {filiere.nom_filiere} ({filiere.niveau}) 
                     </SelectItem>
                   ))}
                 </SelectContent>
