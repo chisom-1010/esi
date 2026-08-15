@@ -82,7 +82,9 @@ export function createEnseignementColumns({
         return (
           <Button
             variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
           >
             Enseignant
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -143,6 +145,13 @@ export function createEnseignementColumns({
                 onClick={() => navigator.clipboard.writeText(enseignement.id)}
               >
                 Copier l'ID de l'enseignement
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  (window.location.href = `/api/admin/teachings/${enseignement.id}/evaluations-export`)
+                }
+              >
+                Voir les détails (CSV)
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onEdit(enseignement)}>
                 Modifier

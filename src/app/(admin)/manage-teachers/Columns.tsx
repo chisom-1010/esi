@@ -37,7 +37,9 @@ export function createColumns({
         return (
           <Button
             variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
           >
             Nom Complet
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -81,13 +83,6 @@ export function createColumns({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() =>
-                    (window.location.href = `/api/admin/teachers/${teacher.id}/evaluations-export`)
-                  }
-                >
-                  Voir les détails (CSV)
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onEdit(teacher)}>
                   Modifier l'enseignant
                 </DropdownMenuItem>

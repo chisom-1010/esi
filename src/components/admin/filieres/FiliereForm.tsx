@@ -18,11 +18,9 @@ import { toast } from "sonner";
 import { FiliereProfile } from "./columns";
 
 const formSchema = z.object({
-  nom_filiere: z
-    .string()
-    .min(2, {
-      message: "Le nom de la filière doit contenir au moins 2 caractères.",
-    }),
+  nom_filiere: z.string().min(2, {
+    message: "Le nom de la filière doit contenir au moins 2 caractères.",
+  }),
   niveau: z
     .string()
     .min(1, { message: "Le niveau est requis (ex: L1, L2, L3, M1, M2)." }),
@@ -55,7 +53,6 @@ export function FiliereForm({
         ? `/api/admin/filieres/${initialData!.id}`
         : "/api/admin/filieres";
       const method = isEditMode ? "PATCH" : "POST";
-
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -64,6 +61,19 @@ export function FiliereForm({
       const result = await response.json();
 
       if (!response.ok) {
+        // Duplicate (nom_filiere, niveau) pair
+        if (response.status === 409) {
+          form.setError("nom_filiere", {
+            type: "manual",
+            message: "Cette filière existe déjà pour ce niveau.",
+          });
+          form.setError("niveau", {
+            type: "manual",
+            message: "Cette filière existe déjà pour ce niveau.",
+          });
+          return;
+        }
+
         throw new Error(
           result.error ||
             (isEditMode ? "Échec de la mise à jour." : "Échec de l'ajout."),
@@ -75,7 +85,6 @@ export function FiliereForm({
           isEditMode ? "mise à jour" : "ajoutée"
         } avec succès.`,
       });
-
       form.reset();
       onSuccessAction();
     } catch (error: any) {

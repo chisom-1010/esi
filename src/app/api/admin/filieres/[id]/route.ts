@@ -77,7 +77,14 @@ export async function PATCH(
     .single();
 
   if (error) {
-    console.error("Erreur mise à jour filière:", error);
+    // Unique constraint violation
+    if (error.code === "23505") {
+      return NextResponse.json(
+        { error: "Cette filière existe déjà pour ce niveau." },
+        { status: 409 },
+      );
+    }
+    console.error("Erreur création filière:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

@@ -20,11 +20,11 @@ export type MatiereProfile = {
 };
 
 export function createMatiereColumns({
-  onEdit,
-  onDelete,
+  onEditAction,
+  onDeleteAction,
 }: {
-  onEdit: (matiere: MatiereProfile) => void;
-  onDelete: (matiere: MatiereProfile) => void;
+  onEditAction: (matiere: MatiereProfile) => void;
+  onDeleteAction: (matiere: MatiereProfile) => void;
 }): ColumnDef<MatiereProfile>[] {
   return [
     {
@@ -43,16 +43,6 @@ export function createMatiereColumns({
       accessorKey: "code_matiere",
       header: "Code",
       cell: ({ row }) => <div>{row.original.code_matiere || "N/A"}</div>,
-    },
-    {
-      accessorKey: "created_at",
-      header: "Date de création",
-      cell: ({ row }) =>
-        new Date(row.original.created_at).toLocaleDateString("fr-FR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }),
     },
     {
       id: "actions",

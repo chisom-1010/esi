@@ -44,16 +44,6 @@ export function createFiliereColumns({
       header: "Niveau",
     },
     {
-      accessorKey: "created_at",
-      header: "Date de création",
-      cell: ({ row }) =>
-        new Date(row.original.created_at).toLocaleDateString("fr-FR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }),
-    },
-    {
       id: "actions",
       cell: ({ row }) => {
         const filiere = row.original;
