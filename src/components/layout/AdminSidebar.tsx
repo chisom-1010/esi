@@ -1,6 +1,15 @@
 // components/layout/AdminSidebar.tsx
 import Link from "next/link";
-import { Home, Users, BarChart2, BookOpenText, BookOpen } from "lucide-react";
+import {
+  Home,
+  Users,
+  BarChart2,
+  BookOpenText,
+  BookOpen,
+  LibraryBig,
+  UserRoundPen,
+  CalendarDays,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AdminSidebar() {
@@ -39,7 +48,7 @@ export function AdminSidebar() {
                 className="cursor-pointer color-black border rounded-4xl w-full"
               >
                 <BookOpen className="w-5 h-5" />
-                <span className="ml-4">Gestion Filières</span>
+                <span className="ml-4">Filières</span>
               </Button>
             </Link>
           </li>
@@ -54,7 +63,52 @@ export function AdminSidebar() {
                 className="cursor-pointer color-black border rounded-4xl w-full"
               >
                 <BookOpenText className="w-5 h-5" />
-                <span className="ml-4">Gestion Matières</span>
+                <span className="ml-4">Matières</span>
+              </Button>
+            </Link>
+          </li>
+
+          <li className="relative px-6 py-1">
+            <Link
+              href="/manage-teachings"
+              className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              <Button
+                type="button"
+                className="cursor-pointer color-black border rounded-4xl w-full"
+              >
+                <LibraryBig className="w-5 h-5" />
+                <span className="ml-4">Enseignements</span>
+              </Button>
+            </Link>
+          </li>
+
+          <li className="relative px-6 py-1">
+            <Link
+              href="/manage-teachers"
+              className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              <Button
+                type="button"
+                className="cursor-pointer color-black border rounded-4xl w-full"
+              >
+                <UserRoundPen className="w-5 h-5" />
+                <span className="ml-4">Eneignants</span>
+              </Button>
+            </Link>
+          </li>
+
+          <li className="relative px-6 py-1">
+            <Link
+              href="/manage-annees-academiques"
+              className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              <Button
+                type="button"
+                className="cursor-pointer color-black border rounded-4xl w-full"
+              >
+                <CalendarDays className="w-5 h-5" />
+                <span className="ml-4">Année Académique</span>
               </Button>
             </Link>
           </li>
@@ -69,7 +123,7 @@ export function AdminSidebar() {
                 className="cursor-pointer color-black border rounded-4xl w-full"
               >
                 <Users className="w-5 h-5" />
-                <span className="ml-4">Gestion Utilisateurs</span>
+                <span className="ml-4">Utilisateurs</span>
               </Button>
             </Link>
           </li>
@@ -88,7 +142,6 @@ export function AdminSidebar() {
               </Button>
             </Link>
           </li>
-          {/* Ajoutez d'autres liens ici (Gestion des Saisies, etc.) */}
         </ul>
       </div>
     </aside>

@@ -139,7 +139,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* --- Section Graphiques & Actions Rapides --- */}
-      <div className="grid gap-6 mb-8 md:grid-cols-2">
+      <div className="mb-8">
         {/* Graphique */}
         <Card className="col-span-1">
           <CardHeader>
@@ -154,38 +154,6 @@ export default async function AdminDashboardPage() {
               title="Top 5 Enseignants"
               description="Score moyen sur 20"
             />
-          </CardContent>
-        </Card>
-
-        {/* Actions Rapides */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Actions Rapides</CardTitle>
-            <CardDescription>
-              Accédez rapidement aux sections importantes.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <Link href="/data-entry/enter-evaluation" passHref>
-              <Button className="w-full cursor-pointer">
-                Nouvelle Saisie d'Évaluation
-              </Button>
-            </Link>
-            <Link href="/manage-teachings" passHref>
-              <Button variant="secondary" className="w-full cursor-pointer">
-                Gérer les Enseignements
-              </Button>
-            </Link>
-            <Link href="/manage-teachers" passHref>
-              <Button variant="secondary" className="w-full cursor-pointer">
-                Gérer les Enseignants
-              </Button>
-            </Link>
-            <Link href="/manage-annees-academiques" passHref>
-              <Button variant="secondary" className="w-full cursor-pointer">
-                Gérer les Années Académiques
-              </Button>
-            </Link>
           </CardContent>
         </Card>
       </div>

@@ -45,14 +45,6 @@ const formSchema = z.object({
   annee_academique_id: z
     .string()
     .uuid({ message: "Veuillez sélectionner une année académique valide." }),
-  volume_horaire_prevu: z.coerce
-    .number()
-    .min(1, {
-      message: "Le volume horaire prévu doit être d'au moins 1 heure.",
-    })
-    .max(1000, {
-      message: "Le volume horaire ne doit pas dépasser 1000 heures.",
-    }),
 });
 
 export type EnseignementFormValues = z.infer<typeof formSchema>;
@@ -84,7 +76,6 @@ export function EnseignementForm({
       matiere_id: initialData?.matiere_id ?? "",
       filiere_id: initialData?.filiere_id ?? "",
       annee_academique_id: initialData?.annee_academique_id ?? "",
-      volume_horaire_prevu: initialData?.volume_horaire_prevu ?? 0,
     },
   });
 
@@ -119,7 +110,6 @@ export function EnseignementForm({
             matiere_id: values.matiere_id,
             filiere_id: values.filiere_id,
             annee_academique_id: values.annee_academique_id,
-            volume_horaire_prevu: values.volume_horaire_prevu,
           },
         ])
         .select();
@@ -229,7 +219,7 @@ export function EnseignementForm({
                 <SelectContent>
                   {filieres.map((filiere) => (
                     <SelectItem key={filiere.id} value={filiere.id}>
-                      {filiere.nom_filiere} ({filiere.niveau}) 
+                      {filiere.nom_filiere} ({filiere.niveau})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -265,20 +255,6 @@ export function EnseignementForm({
           )}
         />
 
-        {/* Champ Volume Horaire */}
-        <FormField
-          control={form.control}
-          name="volume_horaire_prevu"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Volume Horaire Prévu</FormLabel>
-              <FormControl>
-                <Input type="number" placeholder="Ex: 60" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {/* Le bouton de soumission est dans le DialogFooter */}
       </form>
     </Form>

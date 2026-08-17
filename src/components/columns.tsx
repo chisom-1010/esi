@@ -82,9 +82,7 @@ export function createEnseignementColumns({
         return (
           <Button
             variant="ghost"
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Enseignant
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -115,19 +113,6 @@ export function createEnseignementColumns({
       ),
     },
     {
-      accessorKey: "volume_horaire_prevu",
-      header: "Volume Horaire (h)",
-      cell: ({ row }) => <div>{row.getValue("volume_horaire_prevu")}h</div>,
-    },
-    {
-      accessorKey: "created_at",
-      header: "Créé le",
-      cell: ({ row }) => {
-        const date = new Date(row.getValue("created_at"));
-        return <span>{date.toLocaleDateString()}</span>;
-      },
-    },
-    {
       id: "actions",
       cell: ({ row }) => {
         const enseignement = row.original;
@@ -140,12 +125,9 @@ export function createEnseignementColumns({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(enseignement.id)}
-              >
-                Copier l'ID de l'enseignement
-              </DropdownMenuItem>
+              {/* <DropdownMenuLabel className="color-ghost">
+                Actions
+              </DropdownMenuLabel> */}
               <DropdownMenuItem
                 onClick={() =>
                   (window.location.href = `/api/admin/teachings/${enseignement.id}/evaluations-export`)
