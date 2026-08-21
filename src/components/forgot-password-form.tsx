@@ -1,8 +1,5 @@
 "use client";
-
 import { cn } from "@/lib/utils";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,99 +7,37 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useState } from "react";
 
+// Les comptes sont créés par le personnel de saisie / Directeur Pédagogique,
+// qui communique un mot de passe par défaut physiquement dans
+// l'établissement. Il n'y a donc pas d'auto-réinitialisation par email : la
+// personne doit s'adresser directement à l'administration pour obtenir une
+// réinitialisation (voir "Gestion des Utilisateurs" côté admin).
 export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const supabase = createSupabaseBrowserClient();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/update-password`,
-      });
-      if (error) throw error;
-      setSuccess(true);
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      {success ? (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-            <CardDescription>Password reset instructions sent</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              If you registered using your email and password, you will receive
-              a password reset email.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">
-              Réinitialiser votre mot de passe
-            </CardTitle>
-            <CardDescription>
-              Saisissez votre e-mail et nous vous enverrons un lien pour
-              réinitialiser votre mot de passe.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleForgotPassword}>
-              <div className="flex flex-col gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading
-                    ? "L'envoi est en cours..."
-                    : "Envoyer un e-mail de réinitialisation"}
-                </Button>
-              </div>
-              <div className="mt-4 text-center text-sm">
-                As-tu déjà un compte?{" "}
-                <Link
-                  href="/auth/login"
-                  className="underline underline-offset-4"
-                >
-                  Se Connectez
-                </Link>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Mot de passe oublié</CardTitle>
+          <CardDescription>
+            La réinitialisation ne se fait pas en ligne
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Adressez-vous au Directeur Pédagogique de votre établissement
+            pour la réinitialisation de votre mot de passe.
+          </p>
+          <Button asChild className="w-full">
+            <Link href="/auth/login">Retour à la connexion</Link>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

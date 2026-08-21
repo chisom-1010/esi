@@ -1,4 +1,3 @@
-// auth/change-password/ChangePasswordForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -15,7 +14,15 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export function ChangePasswordForm() {
+// 1. Add TypeScript interface for the component props
+interface ChangePasswordFormProps {
+  onSuccessAction?: () => void; // Optional (?) so the form can still be used without it
+}
+
+// 2. Destructure the prop in the function arguments
+export function ChangePasswordForm({
+  onSuccessAction,
+}: ChangePasswordFormProps) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,6 +56,12 @@ export function ChangePasswordForm() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+
+      // 3. Trigger the dialog close if the prop is provided
+      if (onSuccessAction) {
+        onSuccessAction();
+      }
+
       router.push("/");
     } catch (err: any) {
       setError(err.message || "Une erreur est survenue.");

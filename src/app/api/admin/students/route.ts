@@ -98,7 +98,7 @@ export async function POST(request: Request) {
   }
 
   const serviceClient = createSupabaseServiceRoleClient();
-  const defaultPassword = getDefaultResetPassword();
+  const defaultPassword = getDefaultResetPassword("etudiant");
 
   const { data: created, error: createError } =
     await serviceClient.auth.admin.createUser({

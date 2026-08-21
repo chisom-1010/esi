@@ -72,7 +72,7 @@ export async function POST(request: Request) {
   }
 
   const serviceClient = createSupabaseServiceRoleClient();
-  const defaultPassword = getDefaultResetPassword();
+  const defaultPassword = getDefaultResetPassword("etudiant");
   const results: ImportResult[] = [];
 
   // Traitement séquentiel : l'API admin Supabase ne supporte pas les

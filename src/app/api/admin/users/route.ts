@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   }
 
   const serviceClient = createSupabaseServiceRoleClient();
-  const defaultPassword = getDefaultResetPassword();
+  const defaultPassword = getDefaultResetPassword("admin");
 
   // Pas de "filiere_id" dans les métadonnées : le trigger
   // enforce_student_email_domain_trigger ne s'applique donc pas ici, un
