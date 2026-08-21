@@ -83,7 +83,7 @@ export async function POST(request: Request) {
   // role='etudiant' par défaut ; on la corrige explicitement en 'admin'.
   const { error: profileError } = await serviceClient
     .from("profiles")
-    .update({ role: "admin", nom_complet: nom_complet.trim() })
+    .update({ role: "admin", nom_complet: nom_complet.trim(), must_change_password: true })
     .eq("id", created.user.id);
 
   if (profileError) {

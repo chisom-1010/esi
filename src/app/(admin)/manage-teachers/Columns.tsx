@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +19,9 @@ export type Teacher = {
   email: string | null;
   created_at: string;
   nombre_cours: number;
+  nombre_evaluations?: number;
+  note_moyenne?: number | null;
+  pourcentage_moyen?: number | null;
 };
 
 // createColumns prend des handlers en paramètre, sur le même principe que
@@ -55,6 +59,34 @@ export function createColumns({
     {
       accessorKey: "nombre_cours",
       header: "Nombre de Cours",
+    },
+    {
+      id: "note_moyenne",
+      header: "Note Moyenne",
+      cell: ({ row }) => {
+        const { pourcentage_moyen, nombre_evaluations } = row.original;
+        if (pourcentage_moyen === null || pourcentage_moyen === undefined) {
+          return (
+            <span className="text-sm text-muted-foreground">
+              Pas encore évalué
+            </span>
+          );
+        }
+        const variant =
+          pourcentage_moyen >= 70
+            ? "default"
+            : pourcentage_moyen >= 50
+              ? "secondary"
+              : "destructive";
+        return (
+          <div className="flex items-center gap-2">
+            <Badge variant={variant as any}>{pourcentage_moyen}%</Badge>
+            <span className="text-xs text-muted-foreground">
+              ({nombre_evaluations} éval.)
+            </span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "created_at",

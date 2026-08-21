@@ -169,14 +169,9 @@ export function LoginForm({
                 {isLoading ? "Connexion..." : "Se Connecter"}
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Pas de compte ?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="underline underline-offset-4"
-              >
-                S'inscrire
-              </Link>
+            <div className="mt-4 text-center text-sm text-muted-foreground">
+              Pas encore de compte ? Adressez-vous au Directeur Pédagogique
+              de votre établissement.
             </div>
           </form>
         </CardContent>

@@ -53,5 +53,20 @@ export async function POST(
     return NextResponse.json({ error: error.message }, { status });
   }
 
+  const { error: profileError } = await serviceClient
+    .from("profiles")
+    .update({ must_change_password: true })
+    .eq("id", targetUserId);
+
+  if (profileError) {
+    // Le mot de passe est déjà réinitialisé à ce stade ; on log seulement,
+    // pas d'échec bloquant pour ne pas laisser l'admin sans mot de passe
+    // communicable.
+    console.error(
+      "Mot de passe réinitialisé mais flag must_change_password non posé:",
+      profileError,
+    );
+  }
+
   return NextResponse.json({ success: true, defaultPassword });
 }

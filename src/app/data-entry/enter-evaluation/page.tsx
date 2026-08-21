@@ -46,6 +46,16 @@ export default async function EnterEvaluationPage() {
   const { data: formStructure, error: formStructureError } =
     await supabase.rpc("get_form_structure");
 
+  // Enseignements déjà évalués par cet étudiant (create_evaluation_fiche
+  // bloque déjà la re-soumission côté serveur ; ceci sert uniquement à
+  // l'affichage du badge "déjà évalué" / "à évaluer").
+  const { data: existingFiches } = await supabase
+    .from("ficheevaluationetudiant")
+    .select("enseignement_id")
+    .eq("saisi_par_user_id", user.id);
+
+  const evaluatedIds = (existingFiches || []).map((f) => f.enseignement_id);
+
   // --- 3. Gestion des Erreurs et des Données Vides ---
   if (enseignementsError || formStructureError) {
     console.error("Erreur RPC (Enseignements):", enseignementsError);
@@ -108,6 +118,7 @@ export default async function EnterEvaluationPage() {
         enseignements={enseignements}
         categories={categories}
         options={options}
+        evaluatedIds={evaluatedIds}
       />
     </div>
   );

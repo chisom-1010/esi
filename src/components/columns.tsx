@@ -64,9 +64,11 @@ export interface Enseignement {
 export function createEnseignementColumns({
   onEdit,
   onDelete,
+  onDuplicate,
 }: {
   onEdit: (enseignement: Enseignement) => void;
   onDelete: (enseignement: Enseignement) => void;
+  onDuplicate: (enseignement: Enseignement) => void;
 }): ColumnDef<Enseignement>[] {
   return [
     {
@@ -82,7 +84,9 @@ export function createEnseignementColumns({
         return (
           <Button
             variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
           >
             Enseignant
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -113,6 +117,19 @@ export function createEnseignementColumns({
       ),
     },
     {
+      accessorKey: "volume_horaire_prevu",
+      header: "Volume Horaire (h)",
+      cell: ({ row }) => <div>{row.getValue("volume_horaire_prevu")}h</div>,
+    },
+    {
+      accessorKey: "created_at",
+      header: "Créé le",
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("created_at"));
+        return <span>{date.toLocaleDateString()}</span>;
+      },
+    },
+    {
       id: "actions",
       cell: ({ row }) => {
         const enseignement = row.original;
@@ -125,18 +142,24 @@ export function createEnseignementColumns({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {/* <DropdownMenuLabel className="color-ghost">
-                Actions
-              </DropdownMenuLabel> */}
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(enseignement.id)}
+              >
+                Copier l'ID de l'enseignement
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
-                  (window.location.href = `/api/admin/teachings/${enseignement.id}/evaluations-export`)
+                  (window.location.href = `/api/admin/enseignements/${enseignement.id}/evaluations-export`)
                 }
               >
                 Voir les détails (CSV)
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onEdit(enseignement)}>
                 Modifier
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onDuplicate(enseignement)}>
+                Dupliquer vers une autre année
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-600 focus:text-red-600"

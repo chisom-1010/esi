@@ -1,6 +1,7 @@
 // components/layout/ AdminHeader.tsx;
 // (Implémentation basique - à étoffer avec un menu déroulant pour le profil, etc.)
 import { LogoutButton } from "@/components/logout-button";
+import { PasswordChangeButton } from "@/components/PasswordChangeButton";
 export function EtudiantHeader({
   userEmail,
 }: {
@@ -14,6 +15,9 @@ export function EtudiantHeader({
         <div>Connecté en tant que: {userEmail}</div>
         <div className="cursor-pointer">
           <LogoutButton />
+        </div>
+        <div className="cursor-pointer">
+          <PasswordChangeButton />
         </div>
       </div>
     </header>
