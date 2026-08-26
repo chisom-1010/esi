@@ -25,7 +25,7 @@ export default async function EnterEvaluationPage() {
   } = await supabase.auth.getUser();
   if (!user) {
     return (
-      <Alert variant="destructive" className="m-8">
+      <Alert variant="destructive" className="m-4 sm:m-6 lg:m-8">
         <AlertTriangle className="h-4 w-4" />
         <AlertTitle>Accès Refusé</AlertTitle>
         <AlertDescription>Vous devez être connecté.</AlertDescription>
@@ -61,7 +61,7 @@ export default async function EnterEvaluationPage() {
     console.error("Erreur RPC (Enseignements):", enseignementsError);
     console.error("Erreur RPC (Structure Formulaire):", formStructureError);
     return (
-      <Alert variant="destructive" className="m-8">
+      <Alert variant="destructive" className="m-4 sm:m-6 lg:m-8">
         <AlertTitle>Erreur de Récupération des Données</AlertTitle>
         <AlertDescription>
           Impossible de charger les données depuis la base de données via RPC.
@@ -75,12 +75,12 @@ export default async function EnterEvaluationPage() {
 
   if (!categories.length || !options.length) {
     return (
-      <Card className="m-8 border-red-500">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold text-red-500">
+      <Card className="m-4 sm:m-6 lg:m-8 border-red-500">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-lg sm:text-xl font-bold text-red-500">
             Erreur de Configuration
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm">
             Impossible de charger les critères ou options via RPC. Vérifiez la
             fonction `get_form_structure` et les données dans les tables.
           </CardDescription>
@@ -90,12 +90,12 @@ export default async function EnterEvaluationPage() {
   }
   if (!enseignements || !enseignements.length) {
     return (
-      <Card className="m-8 border-yellow-500">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold text-yellow-600">
+      <Card className="m-4 sm:m-6 lg:m-8 border-yellow-500">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-lg sm:text-xl font-bold text-yellow-600">
             Aucun Enseignement
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm">
             Aucun enseignement n'a été trouvé pour votre profil. Si vous êtes
             étudiant, vérifiez que vous êtes bien assigné à une filière contenant
             des cours.
@@ -110,9 +110,9 @@ export default async function EnterEvaluationPage() {
     "[EnterEvaluationPage] Toutes les données ont été chargées via RPC. Rendu du formulaire...",
   );
   return (
-    <div className="container mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
-        Fiche d'Évaluation d'Enseignement
+    <div className="w-full max-w-5xl mx-auto">
+      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 dark:text-gray-100 leading-tight break-words">
+        Fiche d&apos;Évaluation d&apos;Enseignement
       </h1>
       <EvaluationForm
         enseignements={enseignements}

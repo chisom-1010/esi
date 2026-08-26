@@ -36,13 +36,13 @@ export default async function AdminLayout({
   } = await supabase.auth.getUser();
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Barre Latérale ADmin*/}
+    <div className="flex h-screen h-dvh bg-gray-50 dark:bg-gray-900 overflow-hidden">
+      {/* Barre Latérale Admin - cachée sur mobile */}
 
       {role === "admin" ? <AdminSidebar /> : null}
 
       {/* Contenu Principal */}
-      <div className="flex flex-col flex-1 w-full">
+      <div className="flex flex-col flex-1 min-w-0 w-full overflow-hidden">
         {/* En-tête */}
         {role === "admin" ? (
           <AdminHeader userEmail={user?.email} />
@@ -50,9 +50,9 @@ export default async function AdminLayout({
           <EtudiantHeader userEmail={user?.email} />
         )}
         {/* Espace de Contenu */}
-        <main className="h-full overflow-y-auto">
-          <div className="container px-6 py-8 mx-auto grid">
-            {children} {/* C'est ici que vos pages admin s'afficheront */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+            {children}
           </div>
         </main>
       </div>

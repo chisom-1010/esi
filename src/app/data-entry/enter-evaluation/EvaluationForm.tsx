@@ -166,37 +166,43 @@ export function EvaluationForm({
   ).length;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
       {/* --- Résumé "à évaluer" / "déjà évalué" --- */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Vos enseignements</CardTitle>
-          <CardDescription>
+      <Card className="overflow-hidden">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-base sm:text-lg">
+            Vos enseignements
+          </CardTitle>
+          <CardDescription className="text-sm">
             {toEvaluateCount} à évaluer sur {validEnseignements.length}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-2 px-4 sm:px-6">
           {validEnseignements.map((ens) => {
             const isEvaluated = evaluatedIdSet.has(ens.id);
             return (
               <div
                 key={ens.id}
-                className="flex items-center justify-between gap-2 text-sm py-1"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 text-sm py-2 sm:py-1.5 border sm:border-0 rounded-md sm:rounded-none px-3 sm:px-0 bg-muted/30 sm:bg-transparent"
               >
                 <span
                   className={cn(
+                    "break-words min-w-0 leading-snug sm:truncate",
                     isEvaluated && "text-muted-foreground line-through",
                   )}
                 >
                   {enseignementLabel(ens)}
                 </span>
                 {isEvaluated ? (
-                  <Badge variant="secondary" className="gap-1 shrink-0">
-                    <CheckCircle2 className="h-3 w-3" /> Évalué
+                  <Badge
+                    variant="secondary"
+                    className="gap-1 shrink-0 self-start sm:self-auto"
+                  >
+                    <CheckCircle2 className="h-3 w-3 shrink-0" /> Évalué
                   </Badge>
                 ) : (
-                  <Badge className="gap-1 shrink-0">
-                    <Circle className="h-3 w-3" /> À évaluer
+                  <Badge className="gap-1 shrink-0 self-start sm:self-auto">
+                    <Circle className="h-3 w-3 shrink-0" /> À évaluer
                   </Badge>
                 )}
               </div>
@@ -206,21 +212,31 @@ export function EvaluationForm({
       </Card>
 
       {/* --- Section Sélection Enseignement --- */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Sélection de l'Enseignement</CardTitle>
+      <Card className="overflow-hidden">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-base sm:text-lg">
+            Sélection de l&apos;Enseignement
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <Label htmlFor="enseignement-select">Enseignement</Label>
+        <CardContent className="px-4 sm:px-6">
+          <Label
+            htmlFor="enseignement-select"
+            className="text-sm font-medium mb-1.5 block"
+          >
+            Enseignement
+          </Label>
           <Select
             value={selectedEnseignement}
             onValueChange={setSelectedEnseignement}
             required
           >
-            <SelectTrigger id="enseignement-select">
+            <SelectTrigger
+              id="enseignement-select"
+              className="w-full text-sm sm:text-base h-auto min-h-10 py-2.5 whitespace-normal text-left [&>span]:line-clamp-none [&>span]:whitespace-normal"
+            >
               <SelectValue placeholder="Sélectionnez un enseignement..." />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
               {/* Utiliser la liste filtrée validEnseignements */}
               {validEnseignements.map((ens) => {
                 const isEvaluated = evaluatedIdSet.has(ens.id);
@@ -229,9 +245,12 @@ export function EvaluationForm({
                     key={ens.id}
                     value={ens.id}
                     disabled={isEvaluated}
+                    className="whitespace-normal break-words py-2.5 text-sm"
                   >
-                    {enseignementLabel(ens)}
-                    {isEvaluated ? " (déjà évalué)" : ""}
+                    <span className="whitespace-normal break-words">
+                      {enseignementLabel(ens)}
+                      {isEvaluated ? " (déjà évalué)" : ""}
+                    </span>
                   </SelectItem>
                 );
               })}
@@ -242,24 +261,28 @@ export function EvaluationForm({
 
       {/* --- Barre de progression --- */}
       {allCriteria.length > 0 && (
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-3 px-1 border-b">
-          <div className="flex items-center justify-between text-sm mb-1">
-            <span>
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 py-3 px-4 sm:px-1 -mx-4 sm:mx-0 w-[calc(100%+2rem)] sm:w-auto border-y sm:border-b sm:border-t-0 shadow-sm sm:shadow-none">
+          <div className="flex items-center justify-between gap-2 text-xs sm:text-sm mb-1.5">
+            <span className="font-medium truncate">
               {answeredCount} / {allCriteria.length} critères répondus
             </span>
-            <span className="text-muted-foreground">{progressPercent}%</span>
+            <span className="text-muted-foreground shrink-0">
+              {progressPercent}%
+            </span>
           </div>
-          <Progress value={progressPercent} />
+          <Progress value={progressPercent} className="h-2 sm:h-2.5" />
         </div>
       )}
 
       {/* --- Section Critères --- */}
       {categories.map((cat) => (
-        <Card key={cat.id}>
-          <CardHeader>
-            <CardTitle>{cat.nom_categorie}</CardTitle>
+        <Card key={cat.id} className="overflow-hidden">
+          <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+            <CardTitle className="text-base sm:text-lg leading-tight">
+              {cat.nom_categorie}
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6">
             {/* <<< CORRECTION ICI : Utiliser (cat.critereevaluation || []) pour éviter l'erreur .map sur null */}
             {(cat.critereevaluation || []).map((critere) => {
               const isMissing = hasAttemptedSubmit && !responses[critere.id];
@@ -270,11 +293,11 @@ export function EvaluationForm({
                     critereRefs.current[critere.id] = el;
                   }}
                   className={cn(
-                    "p-4 border rounded-md shadow-sm bg-background",
+                    "p-3 sm:p-4 border rounded-lg shadow-sm bg-background",
                     isMissing && "border-red-500 ring-1 ring-red-500",
                   )}
                 >
-                  <Label className="font-semibold block mb-3">
+                  <Label className="font-semibold block mb-3 text-sm sm:text-[15px] leading-snug">
                     {critere.texte_critere}
                   </Label>
                   <RadioGroup
@@ -282,26 +305,33 @@ export function EvaluationForm({
                     onValueChange={(value) =>
                       handleResponseChange(critere.id, value)
                     }
-                    className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-6"
+                    className="flex flex-col gap-2.5 sm:grid sm:grid-cols-2 lg:flex lg:flex-row lg:flex-wrap lg:gap-x-6 lg:gap-y-2"
                     required
                   >
                     {options.map((opt) => (
-                      <div key={opt.id} className="flex items-center space-x-2">
+                      <div
+                        key={opt.id}
+                        className="flex items-center gap-2 py-1"
+                      >
                         <RadioGroupItem
                           value={opt.id}
                           id={`${critere.id}-${opt.id}`}
+                          className="shrink-0"
                         />
                         <Label
                           htmlFor={`${critere.id}-${opt.id}`}
-                          className="cursor-pointer"
+                          className="cursor-pointer text-sm leading-snug font-normal flex-1"
                         >
-                          {opt.libelle} ({opt.points} pts)
+                          {opt.libelle}{" "}
+                          <span className="text-muted-foreground whitespace-nowrap">
+                            ({opt.points} pts)
+                          </span>
                         </Label>
                       </div>
                     ))}
                   </RadioGroup>
                   {isMissing && (
-                    <p className="text-sm text-red-600 mt-2">
+                    <p className="text-xs sm:text-sm text-red-600 mt-2">
                       Réponse requise pour ce critère.
                     </p>
                   )}
@@ -311,7 +341,7 @@ export function EvaluationForm({
             {/* Gérer le cas où il n'y a aucun critère pour une catégorie */}
             {(!cat.critereevaluation || cat.critereevaluation.length === 0) && (
               <p className="text-sm text-muted-foreground">
-                Aucun critère d'évaluation pour cette catégorie.
+                Aucun critère d&apos;évaluation pour cette catégorie.
               </p>
             )}
           </CardContent>
@@ -319,23 +349,31 @@ export function EvaluationForm({
       ))}
 
       {/* --- Section Commentaire --- */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Commentaires Additionnels</CardTitle>
+      <Card className="overflow-hidden">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-base sm:text-lg">
+            Commentaires Additionnels
+          </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
           <Textarea
             placeholder="Écrivez vos remarques et suggestions ici..."
             value={commentaire}
             onChange={(e) => setCommentaire(e.target.value)}
             rows={4}
+            className="text-sm sm:text-base min-h-[100px] resize-y"
           />
         </CardContent>
       </Card>
 
       {/* --- Bouton Soumission --- */}
-      <div className="flex justify-end">
-        <Button type="submit" size="lg" disabled={isLoading}>
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 sm:gap-0 pt-2">
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isLoading}
+          className="w-full sm:w-auto text-sm sm:text-base py-6 sm:py-0 sm:h-11"
+        >
           {isLoading ? "Soumission en cours..." : "Soumettre l'Évaluation"}
         </Button>
       </div>
