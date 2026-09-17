@@ -41,9 +41,7 @@ export function createColumns({
         return (
           <Button
             variant="ghost"
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Nom Complet
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -64,8 +62,8 @@ export function createColumns({
       id: "note_moyenne",
       header: "Note Moyenne",
       cell: ({ row }) => {
-        const { pourcentage_moyen, nombre_evaluations } = row.original;
-        if (pourcentage_moyen === null || pourcentage_moyen === undefined) {
+        const { note_moyenne, nombre_evaluations } = row.original;
+        if (note_moyenne === null || note_moyenne === undefined) {
           return (
             <span className="text-sm text-muted-foreground">
               Pas encore évalué
@@ -73,14 +71,14 @@ export function createColumns({
           );
         }
         const variant =
-          pourcentage_moyen >= 70
+          note_moyenne >= 14
             ? "default"
-            : pourcentage_moyen >= 50
+            : note_moyenne >= 10
               ? "secondary"
               : "destructive";
         return (
           <div className="flex items-center gap-2">
-            <Badge variant={variant as any}>{pourcentage_moyen}%</Badge>
+            <Badge variant={variant as any}>{note_moyenne}/20</Badge>
             <span className="text-xs text-muted-foreground">
               ({nombre_evaluations} éval.)
             </span>

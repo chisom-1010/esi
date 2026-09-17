@@ -84,9 +84,7 @@ export function createEnseignementColumns({
         return (
           <Button
             variant="ghost"
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Enseignant
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -105,24 +103,19 @@ export function createEnseignementColumns({
       ),
     },
     {
-      accessorKey: "filiere.niveau",
+      accessorKey: "Niveau",
       header: "Niveau",
       cell: ({ row }) => <div>{row.original.filiere?.niveau || "N/A"}</div>,
     },
     {
-      accessorKey: "annee_academique",
+      accessorKey: "Année Académique",
       header: "Année Académique",
       cell: ({ row }) => (
         <div>{row.original.annee_academique?.nom_annee || "N/A"}</div>
       ),
     },
     {
-      accessorKey: "volume_horaire_prevu",
-      header: "Volume Horaire (h)",
-      cell: ({ row }) => <div>{row.getValue("volume_horaire_prevu")}h</div>,
-    },
-    {
-      accessorKey: "created_at",
+      accessorKey: "Crée le",
       header: "Créé le",
       cell: ({ row }) => {
         const date = new Date(row.getValue("created_at"));

@@ -139,9 +139,7 @@ export function StudentClientTable({
   };
 
   // --- Suppression ---
-  const [deletingStudent, setDeletingStudent] = useState<Student | null>(
-    null,
-  );
+  const [deletingStudent, setDeletingStudent] = useState<Student | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleConfirmDelete = async () => {
@@ -191,7 +189,12 @@ export function StudentClientTable({
 
   const filiereByName = useMemo(() => {
     const map = new Map<string, string>();
-    filieres.forEach((f) => map.set(f.nom_filiere.trim().toLowerCase(), f.id));
+    filieres.forEach((f) =>
+      map.set(
+        `${f.nom_filiere.trim()} (${f.niveau.trim()})`.toLowerCase(),
+        f.id,
+      ),
+    );
     return map;
   }, [filieres]);
 
@@ -226,13 +229,20 @@ export function StudentClientTable({
       }
 
       const delimiter = lines[0].includes(";") ? ";" : ",";
-      const header = lines[0].split(delimiter).map((h) => h.trim().toLowerCase());
+      const header = lines[0]
+        .split(delimiter)
+        .map((h) => h.trim().toLowerCase());
       const idxNom = header.indexOf("nom_complet");
       const idxEmail = header.indexOf("email");
       const idxFiliere = header.indexOf("filiere");
       const idxAnnee = header.indexOf("annee_academique");
 
-      if (idxNom === -1 || idxEmail === -1 || idxFiliere === -1 || idxAnnee === -1) {
+      if (
+        idxNom === -1 ||
+        idxEmail === -1 ||
+        idxFiliere === -1 ||
+        idxAnnee === -1
+      ) {
         setParseErrors([
           "En-tête invalide. Colonnes attendues : nom_complet,email,filiere,annee_academique",
         ]);
@@ -266,9 +276,7 @@ export function StudentClientTable({
           continue;
         }
         if (!fId) {
-          errors.push(
-            `Ligne ${i + 1} : filière "${filiereName}" introuvable.`,
-          );
+          errors.push(`Ligne ${i + 1} : filière "${filiereName}" introuvable.`);
           continue;
         }
         if (!aId) {
@@ -363,11 +371,11 @@ export function StudentClientTable({
                 <DialogTitle>Importer des étudiants (CSV)</DialogTitle>
                 <DialogDescription>
                   Colonnes requises :{" "}
-                  <code>nom_complet,email,filiere,annee_academique</code>{" "}
-                  (les noms de filière et d'année académique doivent
-                  correspondre exactement à des valeurs existantes, ex:
-                  "SRI-2", "2025-2026"). Emails au format
-                  prenom.nom@esgis.org.
+                  <code>nom_complet,email,filiere,annee_academique</code> (la
+                  filière doit être au format exact "Nom (Niveau)", ex:
+                  "Sciences et Technologies (ST)-SRI (L2)" ; l'année académique
+                  doit correspondre exactement à une valeur existante, ex:
+                  "2025-2026"). Emails au format prenom.nom@esgis.org.
                 </DialogDescription>
               </DialogHeader>
 
@@ -510,9 +518,7 @@ export function StudentClientTable({
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="email-etudiant">
-                      Email institutionnel
-                    </Label>
+                    <Label htmlFor="email-etudiant">Email institutionnel</Label>
                     <Input
                       id="email-etudiant"
                       value={email}
@@ -623,7 +629,10 @@ export function StudentClientTable({
           ))}
           {filteredStudents.length === 0 && (
             <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground">
+              <TableCell
+                colSpan={5}
+                className="text-center text-muted-foreground"
+              >
                 Aucun étudiant pour le moment.
               </TableCell>
             </TableRow>
