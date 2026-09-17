@@ -20,9 +20,7 @@ import { useState } from "react";
 // Définissez vos chemins de redirection ici pour une gestion centralisée
 const REDIRECT_PATHS = {
   admin: "/admin-dashboard",
-  data_entry_personnel: "/data-entry/enter-evaluation",
   etudiant: "/data-entry/enter-evaluation", // Gardé pour l'exemple
-  enseignant: "/teacher-dashboard", // Gardé pour l'exemple
   default: "/dashboard", // Chemin par défaut si aucun rôle ne correspond ou si profil absent
 };
 
@@ -94,13 +92,8 @@ export function LoginForm({
 
       if (userRole === "admin") {
         redirectPath = REDIRECT_PATHS.admin;
-      } else if (userRole === "data_entry_personnel") {
-        // <<== AJOUTÉ ICI
-        redirectPath = REDIRECT_PATHS.data_entry_personnel;
       } else if (userRole === "etudiant") {
         redirectPath = REDIRECT_PATHS.etudiant;
-      } else if (userRole === "enseignant") {
-        redirectPath = REDIRECT_PATHS.enseignant;
       } else {
         console.warn(
           `Rôle non reconnu ('${userRole}') ou profil manquant. Redirection par défaut.`,
@@ -170,8 +163,8 @@ export function LoginForm({
               </Button>
             </div>
             <div className="mt-4 text-center text-sm text-muted-foreground">
-              Pas encore de compte ? Adressez-vous au Directeur Pédagogique
-              de votre établissement.
+              Pas encore de compte ? Adressez-vous au Directeur Pédagogique de
+              votre établissement.
             </div>
           </form>
         </CardContent>
